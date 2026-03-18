@@ -10,13 +10,27 @@ export const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABL
 export const SUPABASE_ANON_KEY_LEGACY = import.meta.env.VITE_SUPABASE_ANON_KEY_LEGACY ?? "";
 
 const SUPABASE_KEY = SUPABASE_PUBLISHABLE_KEY || SUPABASE_ANON_KEY_LEGACY;
+const FALLBACK_SUPABASE_URL = "https://placeholder.supabase.co";
+const FALLBACK_SUPABASE_KEY = "placeholder-key";
+
+export const isSupabaseConfigured = Boolean(SUPABASE_PROJECT_URL && SUPABASE_KEY);
+export const supabaseConfigError = "Supabase не настроен. Заполни VITE_SUPABASE_URL и VITE_SUPABASE_PUBLISHABLE_KEY (или VITE_SUPABASE_ANON_KEY_LEGACY) в .env.";
 
 function deriveProjectRef(url: string) {
   const match = url.match(/^https?:\/\/([^.]+)\.supabase\.co/i);
   return match?.[1] ?? "unknown";
 }
 
-export const supabase = createClient(SUPABASE_PROJECT_URL, SUPABASE_KEY, {
+function ensureSupabaseConfigured() {
+  if (!isSupabaseConfigured) {
+    throw new Error(supabaseConfigError);
+  }
+}
+
+export const supabase = createClient(
+  isSupabaseConfigured ? SUPABASE_PROJECT_URL : FALLBACK_SUPABASE_URL,
+  isSupabaseConfigured ? SUPABASE_KEY : FALLBACK_SUPABASE_KEY,
+  {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
@@ -48,6 +62,7 @@ export function maskSecret(value: string, visibleStart = 10, visibleEnd = 6) {
 const BUCKET = "chat-assets";
 
 export async function uploadChatAsset(userId: string, file: File, folder = "uploads") {
+  ensureSupabaseConfigured();
   const safeName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "-")}`;
   const path = `${userId}/${folder}/${safeName}`;
 
@@ -63,6 +78,7 @@ export async function uploadChatAsset(userId: string, file: File, folder = "uplo
 }
 
 export async function listChatAssets(userId: string, folder = "") {
+  ensureSupabaseConfigured();
   const path = folder ? `${userId}/${folder}` : userId;
   const { data, error } = await supabase.storage.from(BUCKET).list(path, {
     limit: 100,
@@ -77,6 +93,7 @@ export async function listChatAssets(userId: string, folder = "") {
 }
 
 export async function removeChatAsset(path: string) {
+  ensureSupabaseConfigured();
   const { error } = await supabase.storage.from(BUCKET).remove([path]);
   if (error) {
     throw new Error(error.message);
@@ -84,10 +101,12 @@ export async function removeChatAsset(path: string) {
 }
 
 export function getChatAssetSignedUrl(path: string) {
+  ensureSupabaseConfigured();
   return supabase.storage.from(BUCKET).createSignedUrl(path, 60 * 60);
 }
 
 export async function removeAllChatAssets(userId: string, chatId: string) {
+  ensureSupabaseConfigured();
   const folder = `${userId}/chat-${chatId}`;
   const { data } = await supabase.storage.from(BUCKET).list(folder, { limit: 500 });
   if (!data || data.length === 0) return;
@@ -195,6 +214,10 @@ function toIso(value: number) {
 }
 
 export async function probeCloudTables(): Promise<ProbeResult> {
+  if (!isSupabaseConfigured) {
+    return { ready: false, message: supabaseConfigError };
+  }
+
   const { error } = await supabase.from("profiles").select("id").limit(1);
 
   if (!error) {
@@ -215,6 +238,7 @@ export async function probeCloudTables(): Promise<ProbeResult> {
 }
 
 export async function loadCloudWorkspace(userId: string): Promise<LoadWorkspaceResult> {
+  ensureSupabaseConfigured();
   const [settingsRes, chatsRes, messagesRes] = await Promise.all([
     supabase.from("user_settings").select("user_id,horde_api_key,client_agent,model_selection_mode").eq("user_id", userId).maybeSingle<SettingsRow>(),
     supabase.from("chats").select("id,user_id,title,model,max_length,created_at,updated_at").eq("user_id", userId).order("updated_at", { ascending: false }).returns<ChatRow[]>(),
@@ -276,6 +300,7 @@ export async function loadCloudWorkspace(userId: string): Promise<LoadWorkspaceR
 }
 
 export async function saveCloudWorkspace(context: SyncContext) {
+  ensureSupabaseConfigured();
   const { userId, email, settings, chats } = context;
 
   const { error: profileError } = await supabase.from("profiles").upsert({
@@ -396,6 +421,7 @@ export function getTransportLabel(): string {
 
 // ─── Edge Function invoke ───
 async function invokeProxy<T>(action: ProxyAction, payload: Record<string, unknown>, options: ProxyOptions = {}): Promise<T | undefined> {
+  ensureSupabaseConfigured();
   const { data, error } = await supabase.functions.invoke<ProxyEnvelope<T>>("horde-proxy", {
     body: { action, ...payload },
     headers: {

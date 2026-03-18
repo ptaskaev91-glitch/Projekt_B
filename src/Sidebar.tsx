@@ -122,7 +122,7 @@ export function Sidebar(props: Props) {
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-500">Supabase</p>
-                  <p className="mt-1 text-sm font-medium text-white">{supabaseProjectMeta.projectRef}</p>
+                  <p className="mt-1 text-sm font-medium text-white">{supabaseProjectMeta.projectRef === "unknown" ? "не настроен" : supabaseProjectMeta.projectRef}</p>
                 </div>
                 <span className={`rounded-full px-2.5 py-1 text-[10px] font-medium ${props.supabaseStatus === "ready" ? "border border-emerald-500/20 bg-emerald-500/10 text-emerald-200" : props.supabaseStatus === "error" ? "border border-rose-500/20 bg-rose-500/10 text-rose-200" : "border border-zinc-700 bg-zinc-800/70 text-zinc-300"}`}>
                   {props.supabaseStatus === "ready" ? "готов" : props.supabaseStatus === "error" ? "ошибка" : "проверка"}

@@ -369,3 +369,10 @@
 **Assistant:** Убрал секреты из репозитория: Supabase конфиг переведён на Vite env (`.env.example` + `.gitignore`), `DEPLOY.md` обобщён (без project ref), из git убраны `node_modules/` и `dist/` (не должны коммититься). Дальше нужно переписать текущий commit (`git commit --amend`) и повторить `git push -u origin main`. Ключ, попавший в git, нужно ротировать в Supabase.
 
 ---
+
+## Сообщение 33
+**User:** Проведи аудит последних изменений и перехода на git. Не спеши, доделай что необходимо
+
+**Assistant:** Провёл аудит последних изменений и git-перехода. Нашёл и исправил: в репозиторий попал локальный `.codex/environments/environment.toml`, `.gitignore` не игнорировал `.codex`, в `package.json` оставался `@sentry/react`, а переход Supabase на env ломал runtime при пустом `.env` (`createClient('', '')` падал на старте). Исправил ignore-правила для git и Docker, убрал `.codex` из индекса git, удалил `@sentry/react`, добавил runtime guard в `src/lib.ts` и `src/hooks.ts`, чтобы приложение не падало без env и показывало понятную ошибку конфигурации. Заодно синхронизировал `development.md` и полностью переписал `structure.md` под реальную структуру репозитория. Проверки `npm run lint` и `npm run build` повторно успешны.
+
+---

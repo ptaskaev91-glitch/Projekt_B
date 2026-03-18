@@ -4,6 +4,9 @@ node_modules/
 # Build output
 dist/
 
+# Local Codex metadata
+.codex/
+
 # Local env (never commit secrets)
 .env
 .env.*
@@ -18,3 +21,5 @@ pnpm-debug.log*
 # OS / tooling
 .DS_Store
 Thumbs.db
+.vscode/
+.idea/

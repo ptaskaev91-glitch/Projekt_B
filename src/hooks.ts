@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { supabase } from "./lib";
 import {
+  isSupabaseConfigured,
+  supabaseConfigError,
+  supabase,
   scheduleProxyRetry,
   getTransportLabel,
 } from "./lib";
@@ -48,6 +50,12 @@ export function useAuth() {
   const [supabaseStatus, setSupabaseStatus] = useState<"checking" | "ready" | "error">("checking");
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setSupabaseStatus("error");
+      setAuthMessage(supabaseConfigError);
+      return;
+    }
+
     let mounted = true;
     void supabase.auth.getSession().then(({ data, error }) => {
       if (!mounted) return;
@@ -71,6 +79,11 @@ export function useAuth() {
   }, []);
 
   async function sendMagicLink() {
+    if (!isSupabaseConfigured) {
+      setSupabaseStatus("error");
+      setAuthMessage(supabaseConfigError);
+      return;
+    }
     const email = authEmail.trim();
     if (!email) { setAuthMessage("Введите email для входа через magic link."); return; }
     setAuthLoading(true);
@@ -88,6 +101,11 @@ export function useAuth() {
   }
 
   async function signOut() {
+    if (!isSupabaseConfigured) {
+      setSupabaseStatus("error");
+      setAuthMessage(supabaseConfigError);
+      return;
+    }
     setAuthLoading(true);
     setAuthMessage("");
     try {

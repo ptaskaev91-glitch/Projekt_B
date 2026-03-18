@@ -1,109 +1,70 @@
 # Структура проекта
 
-## Текущее состояние — РЕФАКТОРИНГ ЗАВЕРШЁН
-- `src/App.tsx` — ~370 строк, оркестратор (всё ещё можно дальше облегчать)
-- `src/components/ChatArea.tsx` — 143 строки
-- `src/components/Sidebar.tsx` — 194 строки
-- `src/components/MessageBubble.tsx` — ~60 строк
-- `src/components/ModelsPanel.tsx` — ~120 строк
-- `src/components/ImagePanel.tsx` — ~200 строк
-- `src/components/SettingsPanel.tsx` — ~250 строк (настройки, темы, пресеты)
-- `src/hooks/useImageGeneration.ts` — ~110 строк
-- `src/hooks/useAuth.ts` — ~70 строк
-- `src/hooks/useModels.ts` — ~120 строк
-- `src/hooks.ts` — активные хуки: `useAuth`, `useModels`; legacy runtime logic cloud/assets/image удалена из активного пути
-- `src/lib/api.ts` — сервисный слой: текстовые/графические вызовы Horde (create/poll/load)
-- `src/lib.ts` — Supabase client + Cloud Sync + Storage helpers (config через Vite env; без захардкоженных ключей)
-- `src/ErrorBoundary.tsx` — граничный обработчик ошибок UI
-- `src/main.tsx` — bootstrap + ErrorBoundary
-- `core/actions/dispatch.ts` — dispatcher: лог + timeline
-- `core/handlers/index.ts` — карта action → handler (chat/*, assets/*, cloud/*, image/generate, settings/validate)
-- `core/state/index.ts` — AppState, селекторы (activeChat, contextUsage), cloud/assets состояния
+## Текущее состояние
+- `src/App.tsx` — главный orchestration-слой UI: локальный view-state, bridge к `dispatch`, wiring между `core`, `modules` и базовыми экранами.
+- `src/main.tsx` — bootstrap React-приложения и запуск module bootstrap.
+- `src/Sidebar.tsx` — левая колонка: чаты, поиск, import/export, auth, Supabase/cloud status, базовые настройки.
+- `src/ChatArea.tsx` — центральная область: сообщения, composer, отправка, status/context usage.
+- `src/Panels.tsx` — панель настроек и связанный UI, который ещё не вынесен в отдельный модуль.
+- `src/ErrorBoundary.tsx` — защита UI от runtime-ошибок.
+- `src/hooks.ts` — активные hooks: auth, модели, transport label/retry и связанный runtime UI-state.
+- `src/types.ts` — доменные типы, default settings, normalizers и часть общих helper-функций.
+- `src/lib.ts` — Supabase client, storage/cloud sync helpers, Horde proxy/fallback transport, runtime config guard.
+- `src/lib/api.ts` — сервисный слой для текстовых и image запросов к Horde через `src/lib.ts`.
+- `src/index.css` — глобальные стили.
 
-## План реструктуризации
+## Core
+- `core/actions/dispatch.ts` — единый dispatcher с action timeline, logging и обвязкой handlers.
+- `core/handlers/index.ts` — карта intent → handler для chat/assets/cloud/settings и подключение module handlers.
+- `core/handlers/types.ts` — типы для handler context.
+- `core/state/index.ts` — `AppState` и selectors (`activeChat`, `contextUsage` и др.).
 
-### src/types/index.ts
-Все типы: HordeSettings, ChatMessage, ChatSession, HordeModelRaw, HordeModelView, ChatAsset, MessageRole, MessageStatus
+## Modules
+- `modules/index.ts` — реестр модулей и регистрация без дублей.
+- `modules/bootstrap.ts` — централизованный bootstrap модулей при старте.
+- `modules/README.md` — правила модульной изоляции и lifecycle.
+- `modules/image/actions/index.ts` — action types/constants для image-модуля.
+- `modules/image/handlers/index.ts` — handlers генерации изображений.
+- `modules/image/index.ts` — публичный entry image-модуля (actions/types only).
+- `modules/image/ui/ImagePanel.tsx` — UI генерации изображений.
+- `modules/models/actions/index.ts` — action types/constants для выбора модели.
+- `modules/models/handlers/index.ts` — handlers модели/selection intent.
+- `modules/models/index.ts` — публичный entry models-модуля (actions/types only).
+- `modules/models/ui/ModelsPanel.tsx` — UI панели моделей.
 
-### src/constants/index.ts
-Константы: SETTINGS_KEY, CHATS_KEY, ACTIVE_CHAT_KEY, DEFAULT_SETTINGS
+## Runtime и инфраструктура
+- `runtime/README.md` — стартовая документация runtime-слоя, Phase 5.
+- `Dockerfile` — production build на Node + Nginx.
+- `nginx.conf` — SPA routing, gzip, cache headers.
+- `deploy.sh` — серверный deploy script.
+- `.dockerignore` — исключения для Docker context, включая `.codex`.
+- `.gitignore` — исключения для git: `node_modules`, `dist`, `.env*`, `.codex` и локальные IDE-файлы.
+- `.env.example` — шаблон переменных окружения для Supabase.
+- `DEPLOY.md` — инструкции по deploy Edge Function `horde-proxy`.
+- `.github/workflows/ci.yml` — CI: типизация/сборка.
 
-### src/utils/helpers.ts
-Утилиты: uid, clamp, toNumber, wait, inferStrengths, calculatePowerVsGpt5, mapModel, getDefaultChat, normalizeMessage, normalizeChat, buildPromptWithContext
+## Supabase
+- `supabase/config.toml` — локальная конфигурация Supabase CLI.
+- `supabase/migrations/0001_init.sql` — SQL-миграция схемы.
+- `supabase/functions/horde-proxy/index.ts` — Edge Function proxy для Horde API.
 
-### src/hooks/useAuth.ts
-Supabase auth: session, authEmail, authLoading, authMessage, supabaseStatus, sendMagicLink, signOut
+## Документация проекта
+- `rules.md` — правила работы.
+- `development.md` — план, статусы этапов, аудит и что сделано.
+- `history.md` — история переписки и краткие summaries по этапам.
+- `adr/001-architecture-guardrails.md` — ADR по архитектурным ограничениям.
 
-### src/hooks/useCloudSync.ts
-Cloud sync: cloudStatus, cloudMessage, cloudTablesReady, загрузка/сохранение чатов в Supabase DB
+## Прочее
+- `index.html` — HTML shell, meta-теги, PWA wiring.
+- `public/favicon.svg` — иконка.
+- `public/manifest.json` — PWA manifest.
+- `package.json` — npm scripts и зависимости.
+- `package-lock.json` — lockfile зависимостей.
+- `vite.config.ts` — конфигурация Vite.
+- `tsconfig.json` — конфигурация TypeScript с `vite/client`.
 
-### src/hooks/useModels.ts
-Модели Horde: models, loadModels, sortedModels, filteredModels, bestModel, effectiveModel, автообновление 5сек
-
-### src/hooks/useChat.ts
-Чаты: chats, activeChat, createChat, deleteChat, rename, export/import, sendMessage, pollTextJob
-
-### src/hooks/useAssets.ts
-Storage: assets, refreshAssets, upload, remove, insertIntoInput
-
-### src/components/Sidebar.tsx
-Левая панель: список чатов, поиск, экспорт/импорт, настройки
-
-### src/components/ChatArea.tsx
-Центр: header, сообщения, форма ввода
-
-### src/components/MessageBubble.tsx
-Одно сообщение: markdown, копирование, статус
-
-### src/components/ModelsPanel.tsx
-Правая панель: активная модель, рейтинг, таблица
-
-### src/lib/supabase.ts
-Supabase клиент и конфиг (без изменений)
-
-### src/lib/cloudSync.ts
-Cloud sync helpers (без изменений)
-
-### src/lib/hordeProxy.ts
-Horde proxy с fallback (без изменений)
-
-### src/lib/storage.ts
-Storage helpers (без изменений)
-
-## Public файлы
-- `public/manifest.json` — PWA манифест
-- `public/favicon.svg` — иконка приложения
-
-## Файлы без изменений
-- `src/index.css`
-- `src/utils/cn.ts`
-- `supabase/*`
-- `development.md`
-- `index.html` — обновлён (мета-теги, OG, PWA)
-
-## Deploy файлы
-- `Dockerfile` — двухэтапная сборка (Node.js builder + Nginx production)
-- `.dockerignore` — исключения для Docker-контекста
-- `nginx.conf` — SPA fallback, gzip, кэш статики
-- `deploy.sh` — скрипт деплоя на TimeWeb Cloud
-- `.gitignore` — игнор `node_modules/`, `dist/`, `.env*` (секреты не коммитим)
-- `.env.example` — шаблон переменных окружения (Supabase)
-- `adr/001-architecture-guardrails.md` — ADR о запрете преждевременных backend/абстракций и обязательности доменных моделей перед персистенцией
-
-## Актуальные уточнения
-- `src/App.tsx` — orchestration слой UI: локальные view-state поля + bridge в `core/handlers`; async handlers обновляют состояние через актуальный `AppState` ref, чтобы не было отката сообщений из-за stale closure
-- `core/handlers/index.ts` — содержит рабочие async workflow для `chat/sendMessage`, `assets/*`, `cloud/*` + подключенные module handlers (`image`, `models`)
-- `core/state/index.ts` — единый shape runtime-состояния, который теперь используется как источник истины для async dispatch обновлений
-- `src/main.tsx` — bootstrap приложения + `bootstrapModules()`
-- `modules/index.ts` — реестр модулей (register/list, anti-duplicate)
-- `modules/bootstrap.ts` — централизованная регистрация модулей при старте
-- `modules/image/ui/ImagePanel.tsx` — вынесенный UI для генерации изображений (Phase 4, шаг 38)
-- `modules/image/handlers/index.ts` — handlers для image intents, подключены в core
-- `modules/image/actions/index.ts` — типы/константы action для image
-- `modules/image/index.ts` — публичный entry только для actions/types
-- `modules/models/ui/ModelsPanel.tsx` — вынесенный UI панели моделей (Phase 4, шаг 45)
-- `modules/models/handlers/index.ts` — handlers для models intents (`models/select`)
-- `modules/models/actions/index.ts` — типы/константы action для models
-- `modules/models/index.ts` — публичный entry только для actions/types
-- `modules/README.md` — контракт модулей (изоляция, только dispatch, без cross-module импортов)
-- `runtime/README.md` — стартовый runtime-слой (Phase 5, шаг 49)
+## Что важно сейчас
+- UI уже работает через `Intent -> Decision -> State -> Render`.
+- Архитектура частично модульная: `image` и `models` вынесены, settings пока живут в `src/Panels.tsx`.
+- Git-состояние теперь чистое: локальные служебные файлы и build-артефакты не должны попадать в репозиторий.
+- Supabase теперь зависит от `.env`; при пустой конфигурации приложение должно показать ошибку, а не упасть на старте.

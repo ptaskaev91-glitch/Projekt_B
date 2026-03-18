@@ -44,18 +44,13 @@ Render (UI)
 - [x] Выбор кнопкой в таблице
 
 ### Архитектура — РЕФАКТОРИНГ ЗАВЕРШЁН
-- [x] App.tsx: 1481 → ~180 строк (тонкий оркестратор)
-- [x] Типы вынесены в `src/types/index.ts`
-- [x] Константы вынесены в `src/constants/index.ts`
-- [x] Утилиты вынесены в `src/utils/helpers.ts`
-- [x] Хук `useAuth` — `src/hooks/useAuth.ts`
-- [x] Хук `useModels` — `src/hooks/useModels.ts`
-- [x] Хук `useCloudSync` — `src/hooks/useCloudSync.ts`
-- [x] Хук `useAssets` — `src/hooks/useAssets.ts`
-- [x] Компонент `Sidebar` — `src/components/Sidebar.tsx`
-- [x] Компонент `ChatArea` — `src/components/ChatArea.tsx`
-- [x] Компонент `MessageBubble` — `src/components/MessageBubble.tsx`
-- [x] Компонент `ModelsPanel` — `src/components/ModelsPanel.tsx`
+- [x] `src/App.tsx` сокращён с монолита до orchestration-слоя + bridge в `core/*`
+- [x] Базовые UI-компоненты выделены в отдельные файлы: `src/Sidebar.tsx`, `src/ChatArea.tsx`, `src/Panels.tsx`
+- [x] Bootstrap вынесен в `src/main.tsx`
+- [x] Общий runtime state и handlers вынесены в `core/state` и `core/handlers`
+- [x] Модульные фичи вынесены в `modules/image/*` и `modules/models/*`
+- [x] Supabase / storage / cloud sync / proxy helpers централизованы в `src/lib.ts`
+- [x] Активные React hooks пока консолидированы в `src/hooks.ts`
 
 ### Убрано
 - [x] Sentry — убран по решению заказчика
@@ -366,13 +361,22 @@ Architecture grows from flow, not folders.
 ### Расхождения
 - [!] `development.md` раньше утверждал `App.tsx ~180 строк`, фактически `src/App.tsx` = ~370 строк
 - [!] `structure.md` содержал устаревшие размеры файлов
-- [!] Sentry отключён в коде, но пакет `@sentry/react` ещё остался в `package.json`
 - [!] Этап 1 фактически не завершён: Edge Function ещё не задеплоена, фронт работает через proxy/fallback логику
 
 ### Текущее реальное состояние
 - Фаза деплоя на TimeWeb подготовлена на уровне файлов
 - Проект готов к ручному деплою через Docker + Nginx
 - Нужна отдельная проверка рантайма на сервере и deploy `horde-proxy` в Supabase
+
+### Git Audit 2026-03-18
+- [x] Git-репозиторий создан и привязан к `origin/main`
+- [x] Push protection пройден: секреты удалены из коммита и репозитория
+- [x] `node_modules/` и `dist/` больше не версионируются
+- [x] Локальный служебный каталог `.codex/` исключён из git и Docker context
+- [x] Supabase-конфиг переведён на Vite env (`.env.example`, `.gitignore`)
+- [x] Добавлен runtime guard: приложение не падает при пустом `.env`, а показывает понятную ошибку конфигурации
+- [x] Удалена лишняя зависимость `@sentry/react`
+- [x] Документация синхронизирована с реальной структурой репозитория
 
 ---
 
