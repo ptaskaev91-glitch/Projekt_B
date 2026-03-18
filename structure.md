@@ -34,13 +34,13 @@
 
 ## Runtime и инфраструктура
 - `runtime/README.md` — стартовая документация runtime-слоя, Phase 5.
-- `Dockerfile` — production build на Node + Nginx.
-- `nginx.conf` — SPA routing, gzip, cache headers.
-- `deploy.sh` — серверный deploy script.
+- `runtime/Dockerfile` — production build на Node + Nginx (использует root context, конфиг nginx из runtime).
+- `runtime/nginx.conf` — SPA routing, gzip, cache headers.
+- `runtime/deploy.sh` — серверный deploy script (использует `-f runtime/Dockerfile`).
 - `.dockerignore` — исключения для Docker context, включая `.codex`.
 - `.gitignore` — исключения для git: `node_modules`, `dist`, `.env*`, `.codex` и локальные IDE-файлы.
 - `.env.example` — шаблон переменных окружения для Supabase.
-- `DEPLOY.md` — инструкции по deploy Edge Function `horde-proxy`.
+- `DEPLOY.md` — инструкции по deploy Edge Function и фронта (runtime).
 - `.github/workflows/ci.yml` — CI: типизация/сборка.
 
 ## Supabase

@@ -1,4 +1,4 @@
-# Деплой Edge Function
+# Деплой Edge Function и фронта (runtime)
 
 ## Быстрый старт
 
@@ -14,6 +14,10 @@ supabase link --project-ref YOUR_PROJECT_REF
 
 # 4. Задеплой функцию
 supabase functions deploy horde-proxy --no-verify-jwt
+
+# 5. Собери и запусти фронт через Docker (runtime/)
+docker build -f runtime/Dockerfile -t horde-chat .
+docker run -d -p 80:80 --name horde-app --restart always horde-chat
 ```
 
 ## Проверка

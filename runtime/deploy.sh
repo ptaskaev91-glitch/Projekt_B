@@ -1,14 +1,20 @@
 #!/bin/bash
 # Скрипт деплоя на TimeWeb Cloud
 
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="${SCRIPT_DIR%/runtime}"
+
+cd "$REPO_ROOT"
 echo "=== Horde Chat Deploy ==="
 
 # Остановить старый контейнер
-docker stop horde-app 2>/dev/null
-docker rm horde-app 2>/dev/null
+docker stop horde-app 2>/dev/null || true
+docker rm horde-app 2>/dev/null || true
 
 # Собрать новый образ
-docker build -t horde-chat .
+docker build -f runtime/Dockerfile -t horde-chat .
 
 # Запустить контейнер
 docker run -d \

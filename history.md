@@ -376,3 +376,10 @@
 **Assistant:** Провёл аудит последних изменений и git-перехода. Нашёл и исправил: в репозиторий попал локальный `.codex/environments/environment.toml`, `.gitignore` не игнорировал `.codex`, в `package.json` оставался `@sentry/react`, а переход Supabase на env ломал runtime при пустом `.env` (`createClient('', '')` падал на старте). Исправил ignore-правила для git и Docker, убрал `.codex` из индекса git, удалил `@sentry/react`, добавил runtime guard в `src/lib.ts` и `src/hooks.ts`, чтобы приложение не падало без env и показывало понятную ошибку конфигурации. Заодно синхронизировал `development.md` и полностью переписал `structure.md` под реальную структуру репозитория. Проверки `npm run lint` и `npm run build` повторно успешны.
 
 ---
+
+## Сообщение 34
+**User:** Продолжай фазу 5 шаг 50
+
+**Assistant:** Выполнил шаг 50: перенёс Dockerfile, nginx.conf и deploy.sh в `runtime/`, обновил Dockerfile на новый путь конфига, переписал `runtime/deploy.sh` на `-f runtime/Dockerfile`, обновил `DEPLOY.md`, `development.md` (шаг 50 отмечен) и `structure.md`. Git чистый, `npm run lint` и `npm run build` не требуются для этих файлов.
+
+---
