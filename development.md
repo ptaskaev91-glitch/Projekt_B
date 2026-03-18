@@ -215,7 +215,7 @@ Goal: System becomes scalable product runtime.
 
 49. [x] Create `/runtime` folder (`runtime/README.md`).
 50. [x] Move docker/nginx/deploy scripts into runtime (Dockerfile, nginx.conf, deploy.sh).
-51. [ ] Separate environment configs.
+51. [x] Separate environment configs (root `.env.development.example`, `runtime/.env.production.example`, Docker build args for Supabase).
 52. [ ] Define runtime vs product responsibility.
 53. [ ] Add structured logging from Core.
 54. [ ] Introduce event timeline debugging view.

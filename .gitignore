@@ -11,6 +11,8 @@ dist/
 .env
 .env.*
 !.env.example
+!.env.development.example
+!runtime/.env.production.example
 
 # Logs
 npm-debug.log*

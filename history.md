@@ -383,3 +383,10 @@
 **Assistant:** Выполнил шаг 50: перенёс Dockerfile, nginx.conf и deploy.sh в `runtime/`, обновил Dockerfile на новый путь конфига, переписал `runtime/deploy.sh` на `-f runtime/Dockerfile`, обновил `DEPLOY.md`, `development.md` (шаг 50 отмечен) и `structure.md`. Git чистый, `npm run lint` и `npm run build` не требуются для этих файлов.
 
 ---
+
+## Сообщение 35
+**User:** Продолжай
+
+**Assistant:** Закрыл шаг 51: разделил env-конфиги (`.env.development.example`, `runtime/.env.production.example`), добавил build-args в `runtime/Dockerfile`, `runtime/deploy.sh` теперь подхватывает env и прокидывает Supabase ключи в сборку, `DEPLOY.md` обновлён, `development.md` и `structure.md` синхронизированы. Готово к шагу 52.
+
+---

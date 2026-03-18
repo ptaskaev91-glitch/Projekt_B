@@ -39,7 +39,8 @@
 - `runtime/deploy.sh` — серверный deploy script (использует `-f runtime/Dockerfile`).
 - `.dockerignore` — исключения для Docker context, включая `.codex`.
 - `.gitignore` — исключения для git: `node_modules`, `dist`, `.env*`, `.codex` и локальные IDE-файлы.
-- `.env.example` — шаблон переменных окружения для Supabase.
+- `.env.development.example` — шаблон переменных окружения для локальной разработки.
+- `runtime/.env.production.example` — шаблон для прод-сборки через Docker (значения подхватываются build-args).
 - `DEPLOY.md` — инструкции по deploy Edge Function и фронта (runtime).
 - `.github/workflows/ci.yml` — CI: типизация/сборка.
 

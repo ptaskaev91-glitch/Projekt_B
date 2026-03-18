@@ -15,8 +15,16 @@ supabase link --project-ref YOUR_PROJECT_REF
 # 4. Задеплой функцию
 supabase functions deploy horde-proxy --no-verify-jwt
 
-# 5. Собери и запусти фронт через Docker (runtime/)
-docker build -f runtime/Dockerfile -t horde-chat .
+# 5. Подготовь env для прод сборки фронта (значения не коммитим)
+cp runtime/.env.production.example runtime/.env.production
+edit runtime/.env.production
+
+# 6. Собери и запусти фронт через Docker (runtime/)
+docker build -f runtime/Dockerfile \
+  --build-arg SUPABASE_URL=$VITE_SUPABASE_URL \
+  --build-arg SUPABASE_KEY=$VITE_SUPABASE_PUBLISHABLE_KEY \
+  --build-arg SUPABASE_ANON_KEY_LEGACY=$VITE_SUPABASE_ANON_KEY_LEGACY \
+  -t horde-chat .
 docker run -d -p 80:80 --name horde-app --restart always horde-chat
 ```
 

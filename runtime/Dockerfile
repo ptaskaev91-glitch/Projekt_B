@@ -1,6 +1,15 @@
 # Фаза 1: Сборка
 FROM node:20-alpine AS builder
 WORKDIR /app
+
+# Build-time configuration (do not bake secrets into Docker context)
+ARG SUPABASE_URL
+ARG SUPABASE_KEY
+ARG SUPABASE_ANON_KEY_LEGACY
+ENV VITE_SUPABASE_URL=$SUPABASE_URL
+ENV VITE_SUPABASE_PUBLISHABLE_KEY=$SUPABASE_KEY
+ENV VITE_SUPABASE_ANON_KEY_LEGACY=$SUPABASE_ANON_KEY_LEGACY
+
 COPY package*.json ./
 RUN npm ci
 COPY . .
