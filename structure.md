@@ -21,12 +21,20 @@
 - `core/mirror/projector.ts` — проекция structured `dispatch` логов в mirror-записи и группировка по `traceId`.
 - `core/mirror/index.ts` — публичный API mirror-слоя.
 - `core/mirror/README.md` — границы mirror-слоя (без endpoint/transport реализации).
+- `core/persistence/types.ts` — контракты persistence-слоя (`PersistedTrace`, `PersistedEvent`, `PersistenceCheckpoint`, `PersistencePlan`).
+- `core/persistence/planner.ts` — planner `mirror/dispatch -> persistence operations` с checkpoint cursor.
+- `core/persistence/journal.ts` — in-memory journal для apply/replay persistence plans.
+- `core/persistence/index.ts` — публичный API persistence-слоя.
+- `core/persistence/README.md` — границы persistence-слоя (без DB/endpoint реализации).
 - `core/state/index.ts` — `AppState` и selectors (`activeChat`, `contextUsage` и др.).
 
 ## Modules
 - `modules/index.ts` — реестр модулей и регистрация без дублей.
 - `modules/bootstrap.ts` — централизованный bootstrap модулей при старте.
 - `modules/README.md` — правила модульной изоляции и lifecycle.
+- `modules/ai/actions/index.ts` — action types/types для AI chat flow (`chat/sendMessage`).
+- `modules/ai/handlers/index.ts` — AI handler отправки текста и обработки Horde job lifecycle.
+- `modules/ai/index.ts` — публичный entry AI-модуля (actions/types only).
 - `modules/image/actions/index.ts` — action types/constants для image-модуля.
 - `modules/image/handlers/index.ts` — handlers генерации изображений.
 - `modules/image/index.ts` — публичный entry image-модуля (actions/types only).
@@ -61,6 +69,7 @@
 - `adr/001-architecture-guardrails.md` — ADR по архитектурным ограничениям.
 - `adr/002-runtime-vs-product-boundary.md` — ADR с границей между infra/runtime и product behavior.
 - `adr/003-backend-mirror-core-concepts.md` — ADR о backend mirror Core concepts без endpoint-driven подхода.
+- `adr/004-action-aligned-persistence.md` — ADR о persistence-дизайне, выровненном по action/trace модели.
 
 ## Прочее
 - `index.html` — HTML shell, meta-теги, PWA wiring.
@@ -78,7 +87,8 @@
 - Supabase теперь зависит от `.env`; при пустой конфигурации приложение должно показать ошибку, а не упасть на старте.
 - Для внешнего тестирования уже есть рабочий Vercel preview; для постоянного runtime остаётся TimeWeb/Docker путь.
 - Граница между `runtime` и `product` теперь зафиксирована в ADR 002 и `runtime/README.md`.
-- Structured logging из Core уже внедрён; следующий архитектурный блок — debug timeline view в UI.
-- В `src/Panels.tsx` добавлена Debug-вкладка: live timeline `dispatch` событий с фильтрами и очисткой.
+- Structured logging из Core уже внедрён; в `src/Panels.tsx` есть Debug timeline с фильтрами и очисткой.
 - Шаг 55 (backend mirror Core concepts) закрыт через `core/mirror` и ADR 003.
-- Следующий архитектурный блок — шаг 56 (persistence design, aligned with action model).
+- Шаг 56 (persistence design, aligned with action model) закрыт через `core/persistence` и ADR 004.
+- Шаг 57 (AI integration как action-driven модуль) закрыт через `modules/ai` и подключение в `core/handlers`.
+- Следующий архитектурный блок — шаг 58 (UI replaceability, mock UI test).

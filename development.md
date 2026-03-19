@@ -220,8 +220,8 @@ Goal: System becomes scalable product runtime.
 53. [x] Add structured logging from Core (`core/actions/dispatch.ts` + handler context trace logging).
 54. [x] Introduce event timeline debugging view (`src/Panels.tsx`, live feed from dispatch log).
 55. [x] Prepare backend mirror of Core concepts (NOT endpoints) via `core/mirror` + ADR 003.
-56. [ ] Design persistence aligned with actions.
-57. [ ] Add AI integration as module (action-driven).
+56. [x] Design persistence aligned with actions.
+57. [x] Add AI integration as module (action-driven).
 58. [ ] Validate UI replaceability (mock UI test).
 59. [ ] Document platform architecture diagram.
 60. [ ] Freeze architectural principles as project constitution.
@@ -379,9 +379,9 @@ Architecture grows from flow, not folders.
 ## Что делаем дальше
 
 ### Ближайший блок — Phase 5
-1. Шаг 56 — спроектировать persistence, согласованный с action model
-2. Шаг 57 — оформить AI integration как action-driven модуль
-3. Шаг 58 — проверить UI replaceability (mock UI test)
+1. Шаг 58 — проверить UI replaceability (mock UI test)
+2. Шаг 59 — документировать platform architecture diagram
+3. Шаг 60 — зафиксировать архитектурные принципы как project constitution
 
 ### После этого
 4. Вернуться к infra: deploy `supabase/functions/horde-proxy`
@@ -418,6 +418,20 @@ Architecture grows from flow, not folders.
 - [x] Добавлена проекция `dispatch` structured logs → mirror records
 - [x] Добавлена группировка записей по `traceId` для будущей persistence-пайплайна
 - [x] Добавлен ADR 003 (`adr/003-backend-mirror-core-concepts.md`)
+
+### Action-Aligned Persistence 2026-03-19
+- [x] Добавлен слой `core/persistence` (контракты + planner + in-memory journal)
+- [x] Введены persistence-типы: `PersistedTrace`, `PersistedEvent`, `PersistenceCheckpoint`, `PersistencePlan`
+- [x] Добавлен planner: `mirror/dispatch -> persistence operations` с checkpoint cursor
+- [x] Добавлен `createPersistenceJournal(...)` для replay/debug контрактов без привязки к DB
+- [x] Добавлен ADR 004 (`adr/004-action-aligned-persistence.md`)
+
+### AI Module Integration 2026-03-19
+- [x] Добавлен модуль `modules/ai` (`actions`, `handlers`, `index`)
+- [x] `chat/sendMessage` перенесён из `core/handlers` в `modules/ai/handlers`
+- [x] Core подключает AI через module handler map (`...aiHandlers`)
+- [x] App отправляет сообщение через модульный action (`aiActionTypes.sendMessage`)
+- [x] Обновлён module bootstrap (`modules/bootstrap.ts`) с регистрацией `ai`
 
 ---
 

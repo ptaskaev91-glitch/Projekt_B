@@ -432,3 +432,17 @@
 **Assistant:** Закрыл шаг 55 `Phase 5`: подготовил backend mirror Core concepts без endpoint-ориентированного дизайна. Добавлен слой `core/mirror` (`types.ts`, `projector.ts`, `index.ts`, `README.md`) с mirror-контрактами и проекцией structured dispatch-логов в backend-ready записи (`lifecycle` + `handler` events), а также группировка по `traceId` для следующего шага persistence. Архитектурно зафиксировано в `adr/003-backend-mirror-core-concepts.md`. Проверки `npm run lint` и `npm run build` успешны. Следующий шаг — 56 (action-aligned persistence design).
 
 ---
+
+## Сообщение 42
+**User:** Делай
+
+**Assistant:** Закрыл шаг 56 `Phase 5`: добавил action-aligned слой `core/persistence` (`types.ts`, `planner.ts`, `journal.ts`, `index.ts`, `README.md`). Planner теперь строит детерминированный persistence plan (`trace/upsert`, `event/append`, `checkpoint/save`) из mirror batch и dispatch entries, сохраняя корреляцию `traceId/actionId/actionType`. Добавлен in-memory journal для replay/debug без привязки к конкретной БД и зафиксирован ADR 004 (`adr/004-action-aligned-persistence.md`). Проверки `npm run lint` и `npm run build` успешны. Следующий шаг — 57 (AI integration как action-driven модуль).
+
+---
+
+## Сообщение 43
+**User:** Делай
+
+**Assistant:** Закрыл шаг 57 `Phase 5`: вынес AI integration в отдельный модуль `modules/ai` (actions/handlers/index), перенёс `chat/sendMessage` из `core/handlers` в модульный handler, подключил `...aiHandlers` в core map и зарегистрировал модуль в `modules/bootstrap.ts`. `src/App.tsx` теперь dispatch'ит модульный action `aiActionTypes.sendMessage`, сохраняя intent vocabulary без переименований. Проверки `npm run lint` и `npm run build` успешны. Следующий шаг — 58 (UI replaceability mock test).
+
+---

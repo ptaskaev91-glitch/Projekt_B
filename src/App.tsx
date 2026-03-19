@@ -17,6 +17,7 @@ import {
 } from "../core/actions/dispatch";
 import { handlers as coreHandlers } from "../core/handlers";
 import { selectors, type AppState } from "../core/state";
+import { aiActionTypes } from "../modules/ai";
 import { modelsActionTypes } from "../modules/models";
 
 import { useAuth, useModels } from "./hooks";
@@ -402,7 +403,7 @@ export function App() {
     }
     setSending(true); setGlobalError(""); setInput("");
     try {
-      await dispatch("chat/sendMessage", {
+      await dispatch(aiActionTypes.sendMessage, {
         userText,
         chatId: activeChat.id,
         effectiveModelName: models.effectiveModelName,

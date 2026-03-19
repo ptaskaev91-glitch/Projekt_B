@@ -1,9 +1,6 @@
 import { getDefaultChat, normalizeChat } from "../../src/types";
 import type { ChatSession, ChatAsset, HordeSettings } from "../../src/types";
-import { buildPromptWithContext, uid, wait } from "../../src/types";
 import {
-  createTextJobViaProxy,
-  getTextJobStatusViaProxy,
   listChatAssets,
   getChatAssetSignedUrl,
   uploadChatAsset,
@@ -16,6 +13,7 @@ import {
 import type { HandlerMap } from "./types";
 import { imageHandlers } from "../../modules/image/handlers";
 import { modelsHandlers } from "../../modules/models/handlers";
+import { aiHandlers } from "../../modules/ai/handlers";
 
 export const handlers: HandlerMap = {
   "chat/create": (_payload, ctx) => {
@@ -98,122 +96,7 @@ export const handlers: HandlerMap = {
       draft.settings = { ...draft.settings, ...partial };
     });
   },
-  "chat/sendMessage": async (payload, ctx) => {
-    const { userText, chatId, effectiveModelName } = (payload ?? {}) as {
-      userText?: string;
-      chatId?: string;
-      effectiveModelName?: string;
-    };
-    if (!userText || !chatId) {
-      ctx.log("chat.send.invalid_payload", { hasUserText: Boolean(userText), hasChatId: Boolean(chatId) }, "warn");
-      return;
-    }
-    const state = ctx.getState();
-    const chat = state.chats.find((c) => c.id === chatId);
-    if (!chat) {
-      ctx.log("chat.send.chat_not_found", { chatId }, "warn");
-      return;
-    }
-
-    ctx.setState((draft) => {
-      const userMsg = { id: uid(), role: "user" as const, content: userText, createdAt: Date.now(), status: "done" as const };
-      const assistantMsg = { id: uid(), role: "assistant" as const, content: "Генерирую...", createdAt: Date.now(), status: "loading" as const };
-      draft.chats = draft.chats.map((c) =>
-        c.id === chatId
-          ? {
-              ...c,
-              title: c.messages.length === 0 ? userText.slice(0, 42) : c.title,
-              updatedAt: Date.now(),
-              messages: [...c.messages, userMsg, assistantMsg],
-            }
-          : c
-      );
-    });
-
-    try {
-      const { settings } = ctx.getState();
-      const preset = settings.presets.find((p) => p.id === settings.activePresetId) ?? settings.presets[0];
-      const { prompt } = buildPromptWithContext(chat, userText, settings.systemPrompt, settings.maxContextTokens);
-      const modelToUse = effectiveModelName || chat.model || "aphrodite";
-      ctx.log("chat.send.job_create", { chatId, model: modelToUse }, "info");
-
-      const create = await createTextJobViaProxy({
-        prompt,
-        models: [modelToUse],
-        params: {
-          max_length: preset?.maxLength ?? 400,
-          temperature: preset?.temperature ?? 0.8,
-          top_p: preset?.topP ?? 0.9,
-          top_k: preset?.topK ?? 50,
-          rep_pen: preset?.repetitionPenalty ?? 1.05,
-        }
-      }, { apiKey: settings.apiKey, clientAgent: settings.clientAgent });
-
-      if (!create?.id) throw new Error("Не получен id задачи.");
-      ctx.log("chat.send.job_created", { chatId, jobId: create.id }, "debug");
-
-      for (let i = 0; i < 90; i++) {
-        const status = await getTextJobStatusViaProxy(create.id, { apiKey: settings.apiKey, clientAgent: settings.clientAgent });
-        ctx.setState((draft) => {
-          draft.chats = draft.chats.map((c) =>
-            c.id === chatId
-              ? {
-                  ...c,
-                  updatedAt: Date.now(),
-                  messages: c.messages.map((m) =>
-                    m.id === c.messages[c.messages.length - 1].id
-                      ? { ...m, queuePosition: status.queue_position, waitTime: status.wait_time }
-                      : m
-                  ),
-                }
-              : c
-          );
-        });
-        if (status.done && Array.isArray(status.generations) && status.generations[0]) {
-          const gen = status.generations[0];
-          ctx.log("chat.send.job_done", { chatId, worker: gen.worker_name ?? null }, "info");
-          ctx.setState((draft) => {
-            draft.chats = draft.chats.map((c) =>
-              c.id === chatId
-                ? {
-                    ...c,
-                    updatedAt: Date.now(),
-                    messages: c.messages.map((m, idx) =>
-                      idx === c.messages.length - 1 ? { ...m, status: "done", content: gen.text, workerName: gen.worker_name } : m
-                    ),
-                  }
-                : c
-            );
-          });
-          return;
-        }
-        if (status.faulted) {
-          ctx.log("chat.send.job_faulted", { chatId, jobId: create.id }, "warn");
-          throw new Error("Задача завершилась с ошибкой на Horde.");
-        }
-        await wait(2500);
-      }
-      ctx.log("chat.send.job_timeout", { chatId, jobId: create.id }, "warn");
-      throw new Error("Таймаут ожидания.");
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : "Ошибка";
-      ctx.log("chat.send.error", { chatId, message: msg }, "error");
-      ctx.setState((draft) => {
-        draft.chats = draft.chats.map((c) =>
-          c.id === chatId
-            ? {
-                ...c,
-                updatedAt: Date.now(),
-                messages: c.messages.map((m, idx) =>
-                  idx === c.messages.length - 1 ? { ...m, status: "error" as const, content: msg } : m
-                ),
-              }
-            : c
-        );
-        draft.validationErrors = [...draft.validationErrors, msg];
-      });
-    }
-  },
+  ...aiHandlers,
   ...imageHandlers,
   ...modelsHandlers,
   "assets/list": async (payload, ctx) => {
