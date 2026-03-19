@@ -55,6 +55,7 @@
 - `development.md` — план, статусы этапов, аудит и что сделано.
 - `history.md` — история переписки и краткие summaries по этапам.
 - `adr/001-architecture-guardrails.md` — ADR по архитектурным ограничениям.
+- `adr/002-runtime-vs-product-boundary.md` — ADR с границей между infra/runtime и product behavior.
 
 ## Прочее
 - `index.html` — HTML shell, meta-теги, PWA wiring.
@@ -71,4 +72,5 @@
 - Git-состояние теперь чистое: локальные служебные файлы и build-артефакты не должны попадать в репозиторий.
 - Supabase теперь зависит от `.env`; при пустой конфигурации приложение должно показать ошибку, а не упасть на старте.
 - Для внешнего тестирования уже есть рабочий Vercel preview; для постоянного runtime остаётся TimeWeb/Docker путь.
-- Следующий архитектурный блок: шаг 52 (`runtime` vs `product` responsibilities), затем structured logging и debug timeline.
+- Граница между `runtime` и `product` теперь зафиксирована в ADR 002 и `runtime/README.md`.
+- Следующий архитектурный блок: structured logging, затем debug timeline.

@@ -216,7 +216,7 @@ Goal: System becomes scalable product runtime.
 49. [x] Create `/runtime` folder (`runtime/README.md`).
 50. [x] Move docker/nginx/deploy scripts into runtime (Dockerfile, nginx.conf, deploy.sh).
 51. [x] Separate environment configs (root `.env.development.example`, `runtime/.env.production.example`, Docker build args for Supabase).
-52. [ ] Define runtime vs product responsibility.
+52. [x] Define runtime vs product responsibility (`runtime/README.md`, ADR 002).
 53. [ ] Add structured logging from Core.
 54. [ ] Introduce event timeline debugging view.
 55. [ ] Prepare backend mirror of Core concepts (NOT endpoints).
@@ -379,9 +379,9 @@ Architecture grows from flow, not folders.
 ## Что делаем дальше
 
 ### Ближайший блок — Phase 5
-1. Шаг 52 — чётко разделить responsibility между `runtime` и `product`
-2. Шаг 53 — добавить structured logging в `core/actions/dispatch.ts` и handler context
-3. Шаг 54 — сделать debug/event timeline view в UI для action flow и async jobs
+1. Шаг 53 — добавить structured logging в `core/actions/dispatch.ts` и handler context
+2. Шаг 54 — сделать debug/event timeline view в UI для action flow и async jobs
+3. Шаг 55 — подготовить backend mirror Core concepts (без endpoint-driven дизайна)
 
 ### После этого
 4. Вернуться к infra: deploy `supabase/functions/horde-proxy`

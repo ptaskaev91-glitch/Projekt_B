@@ -404,3 +404,10 @@
 **Assistant:** Проверил публичность ссылки извне. Первый deployment URL был закрыт `401 Unauthorized` из-за Vercel Deployment Protection. После этого проверен shareable/public URL: сервер отвечает `200 OK`, HTML приложения загружается, этап онлайн-предпросмотра считаем завершённым. Следующий блок работ — `Phase 5`, шаги 52–54.
 
 ---
+
+## Сообщение 38
+**User:** Делай
+
+**Assistant:** Закрыл шаг 52 `Phase 5`: зафиксировал разделение ответственности между `runtime` и `product` через `runtime/README.md` и новый `adr/002-runtime-vs-product-boundary.md`. Теперь явно определено, что runtime отвечает за build/deploy/env injection/hosting, а product — за intents, state, handlers, UI и модульное поведение. `development.md`, `history.md` и `structure.md` синхронизированы; следующий шаг — structured logging (`step 53`).
+
+---
