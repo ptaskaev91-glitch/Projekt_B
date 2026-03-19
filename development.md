@@ -305,10 +305,10 @@ Architecture grows from flow, not folders.
 **Статус:** готово к выполнению
 
 **Созданные файлы:**
-- `Dockerfile` — двухэтапная сборка (Node.js + Nginx)
+- `runtime/Dockerfile` — двухэтапная сборка (Node.js + Nginx)
 - `.dockerignore` — исключения для Docker
-- `nginx.conf` — SPA-роутинг, gzip, кэш статики
-- `deploy.sh` — скрипт деплоя
+- `runtime/nginx.conf` — SPA-роутинг, gzip, кэш статики
+- `runtime/deploy.sh` — скрипт деплоя
 
 **Твои действия:**
 1. Зайди на сервер TimeWeb по SSH:
@@ -327,8 +327,8 @@ Architecture grows from flow, not folders.
    ```
 4. Запусти деплой:
    ```bash
-   chmod +x deploy.sh
-   ./deploy.sh
+   chmod +x runtime/deploy.sh
+   ./runtime/deploy.sh
    ```
 5. Проверь в браузере: `http://ТВОЙ_IP`
 
@@ -352,11 +352,12 @@ Architecture grows from flow, not folders.
 
 ### Что подтверждено
 - [x] Проект собирается (`npm run build` успешен)
-- [x] Файлы деплоя существуют: `Dockerfile`, `.dockerignore`, `nginx.conf`, `deploy.sh`
+- [x] Файлы деплоя существуют: `runtime/Dockerfile`, `.dockerignore`, `runtime/nginx.conf`, `runtime/deploy.sh`
 - [x] `DEPLOY.md` существует с инструкцией по деплою Edge Function
 - [x] Cloud Sync реализован: конфликт-резолюция, автомёрж, статус, last sync
 - [x] Storage реализован: upload/list/delete/signed URLs, cleanup при удалении чата
 - [x] Lazy loading и production-файлы существуют: `manifest.json`, `favicon.svg`
+- [x] Публичный online preview доступен через Vercel и открывается по shareable link
 
 ### Расхождения
 - [!] `development.md` раньше утверждал `App.tsx ~180 строк`, фактически `src/App.tsx` = ~370 строк
@@ -365,8 +366,26 @@ Architecture grows from flow, not folders.
 
 ### Текущее реальное состояние
 - Фаза деплоя на TimeWeb подготовлена на уровне файлов
+- Есть рабочий публичный Vercel preview для удалённой проверки продукта
 - Проект готов к ручному деплою через Docker + Nginx
 - Нужна отдельная проверка рантайма на сервере и deploy `horde-proxy` в Supabase
+
+### Online Preview 2026-03-19
+- [x] Проект поднят на Vercel
+- [x] Shareable link проверен извне: сайт отвечает `200 OK`
+- [x] Этап онлайн-предпросмотра считаем завершённым
+- [ ] При необходимости заменить временный share-link на постоянный production URL / домен
+
+## Что делаем дальше
+
+### Ближайший блок — Phase 5
+1. Шаг 52 — чётко разделить responsibility между `runtime` и `product`
+2. Шаг 53 — добавить structured logging в `core/actions/dispatch.ts` и handler context
+3. Шаг 54 — сделать debug/event timeline view в UI для action flow и async jobs
+
+### После этого
+4. Вернуться к infra: deploy `supabase/functions/horde-proxy`
+5. Проверить полный production flow: auth, cloud sync, text generation, image generation, storage
 
 ### Git Audit 2026-03-18
 - [x] Git-репозиторий создан и привязан к `origin/main`

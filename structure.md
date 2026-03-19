@@ -43,6 +43,7 @@
 - `runtime/.env.production.example` — шаблон для прод-сборки через Docker (значения подхватываются build-args).
 - `DEPLOY.md` — инструкции по deploy Edge Function и фронта (runtime).
 - `.github/workflows/ci.yml` — CI: типизация/сборка.
+- Vercel preview — рабочий внешний online preview для демонстрации продукта по ссылке.
 
 ## Supabase
 - `supabase/config.toml` — локальная конфигурация Supabase CLI.
@@ -69,3 +70,5 @@
 - Архитектура частично модульная: `image` и `models` вынесены, settings пока живут в `src/Panels.tsx`.
 - Git-состояние теперь чистое: локальные служебные файлы и build-артефакты не должны попадать в репозиторий.
 - Supabase теперь зависит от `.env`; при пустой конфигурации приложение должно показать ошибку, а не упасть на старте.
+- Для внешнего тестирования уже есть рабочий Vercel preview; для постоянного runtime остаётся TimeWeb/Docker путь.
+- Следующий архитектурный блок: шаг 52 (`runtime` vs `product` responsibilities), затем structured logging и debug timeline.

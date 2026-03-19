@@ -390,3 +390,17 @@
 **Assistant:** Закрыл шаг 51: разделил env-конфиги (`.env.development.example`, `runtime/.env.production.example`), добавил build-args в `runtime/Dockerfile`, `runtime/deploy.sh` теперь подхватывает env и прокидывает Supabase ключи в сборку, `DEPLOY.md` обновлён, `development.md` и `structure.md` синхронизированы. Готово к шагу 52.
 
 ---
+
+## Сообщение 36
+**User:** Как запускать этот проект по ссылке для предпросмотра онлайн, чтобы можно было отправить кому-то ссылку?
+
+**Assistant:** Зафиксировал рабочий путь: самый быстрый online preview для этого проекта — Vercel или Cloudflare Pages, а для постоянного сервера остаётся TimeWeb + Docker. Рекомендован Vercel: импорт GitHub-репозитория, задать `VITE_SUPABASE_URL` и `VITE_SUPABASE_PUBLISHABLE_KEY`, получить публичный `*.vercel.app` URL и отправлять его как preview.
+
+---
+
+## Сообщение 37
+**User:** Прислал Vercel preview URL для проверки.
+
+**Assistant:** Проверил публичность ссылки извне. Первый deployment URL был закрыт `401 Unauthorized` из-за Vercel Deployment Protection. После этого проверен shareable/public URL: сервер отвечает `200 OK`, HTML приложения загружается, этап онлайн-предпросмотра считаем завершённым. Следующий блок работ — `Phase 5`, шаги 52–54.
+
+---
