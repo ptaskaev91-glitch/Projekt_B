@@ -218,7 +218,7 @@ Goal: System becomes scalable product runtime.
 51. [x] Separate environment configs (root `.env.development.example`, `runtime/.env.production.example`, Docker build args for Supabase).
 52. [x] Define runtime vs product responsibility (`runtime/README.md`, ADR 002).
 53. [x] Add structured logging from Core (`core/actions/dispatch.ts` + handler context trace logging).
-54. [ ] Introduce event timeline debugging view.
+54. [x] Introduce event timeline debugging view (`src/Panels.tsx`, live feed from dispatch log).
 55. [ ] Prepare backend mirror of Core concepts (NOT endpoints).
 56. [ ] Design persistence aligned with actions.
 57. [ ] Add AI integration as module (action-driven).
@@ -379,9 +379,9 @@ Architecture grows from flow, not folders.
 ## Что делаем дальше
 
 ### Ближайший блок — Phase 5
-1. Шаг 54 — сделать debug/event timeline view в UI для action flow и async jobs
-2. Шаг 55 — подготовить backend mirror Core concepts (без endpoint-driven дизайна)
-3. Шаг 56 — спроектировать persistence, согласованный с action model
+1. Шаг 55 — подготовить backend mirror Core concepts (без endpoint-driven дизайна)
+2. Шаг 56 — спроектировать persistence, согласованный с action model
+3. Шаг 57 — оформить AI integration как action-driven модуль
 
 ### После этого
 4. Вернуться к infra: deploy `supabase/functions/horde-proxy`
@@ -404,6 +404,13 @@ Architecture grows from flow, not folders.
 - [x] `HandlerContext` расширен полями `traceId`, `actionType`, `log(...)`
 - [x] Мост в `src/App.tsx` логирует `handler.start/end/error` и каждое `state.update`
 - [x] Критичные async-handler'ы (`chat/sendMessage`, `cloud/load`) добавляют доменные log events
+
+### Debug Timeline UI 2026-03-19
+- [x] В `SettingsPanel` добавлена вкладка `Debug`
+- [x] Реализована live-подписка на `subscribeDispatchLog(...)`
+- [x] Добавлены фильтры по `actionType`, `level`, строковый поиск по событиям/trace/error
+- [x] Добавлена очистка timeline через `clearDispatchLog()`
+- [x] В timeline отображаются `event`, `duration`, `traceId`, `actionId`, `details`, `error`
 
 ---
 

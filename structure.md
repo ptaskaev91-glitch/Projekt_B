@@ -74,3 +74,5 @@
 - Для внешнего тестирования уже есть рабочий Vercel preview; для постоянного runtime остаётся TimeWeb/Docker путь.
 - Граница между `runtime` и `product` теперь зафиксирована в ADR 002 и `runtime/README.md`.
 - Structured logging из Core уже внедрён; следующий архитектурный блок — debug timeline view в UI.
+- В `src/Panels.tsx` добавлена Debug-вкладка: live timeline `dispatch` событий с фильтрами и очисткой.
+- Следующий архитектурный блок — шаг 55 (backend mirror Core concepts, без endpoint-driven дизайна).

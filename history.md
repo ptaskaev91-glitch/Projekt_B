@@ -418,3 +418,10 @@
 **Assistant:** Закрыл шаг 53 `Phase 5`: добавил structured logging в `core/actions/dispatch.ts` (типизированные события, `actionId`, `traceId`, API `getDispatchLog/clearDispatchLog/subscribeDispatchLog`) и расширил `HandlerContext` полями `traceId`, `actionType`, `log(...)`. Мост в `src/App.tsx` теперь автоматически логирует `handler.start/end/error` и каждое `state.update`, а критичные async-handler'ы (`chat/sendMessage`, `cloud/load`) пишут доменные события. Проверки `npm run lint` и `npm run build` успешны. Следующий шаг — 54 (UI debug timeline view).
 
 ---
+
+## Сообщение 40
+**User:** Давай, делай
+
+**Assistant:** Закрыл шаг 54 `Phase 5`: добавил в `src/Panels.tsx` вкладку `Debug` в `SettingsPanel` с live timeline из structured dispatch logs. Реализованы подписка на `subscribeDispatchLog`, фильтры по action/level, строковый поиск по событиям, отображение `traceId/actionId/duration/details/error` и очистка через `clearDispatchLog()`. После фикса cleanup-подписки проверки `npm run lint` и `npm run build` успешны. Следующий шаг — 55 (backend mirror Core concepts без endpoint-driven подхода).
+
+---
