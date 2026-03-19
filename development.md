@@ -219,7 +219,7 @@ Goal: System becomes scalable product runtime.
 52. [x] Define runtime vs product responsibility (`runtime/README.md`, ADR 002).
 53. [x] Add structured logging from Core (`core/actions/dispatch.ts` + handler context trace logging).
 54. [x] Introduce event timeline debugging view (`src/Panels.tsx`, live feed from dispatch log).
-55. [ ] Prepare backend mirror of Core concepts (NOT endpoints).
+55. [x] Prepare backend mirror of Core concepts (NOT endpoints) via `core/mirror` + ADR 003.
 56. [ ] Design persistence aligned with actions.
 57. [ ] Add AI integration as module (action-driven).
 58. [ ] Validate UI replaceability (mock UI test).
@@ -379,9 +379,9 @@ Architecture grows from flow, not folders.
 ## Что делаем дальше
 
 ### Ближайший блок — Phase 5
-1. Шаг 55 — подготовить backend mirror Core concepts (без endpoint-driven дизайна)
-2. Шаг 56 — спроектировать persistence, согласованный с action model
-3. Шаг 57 — оформить AI integration как action-driven модуль
+1. Шаг 56 — спроектировать persistence, согласованный с action model
+2. Шаг 57 — оформить AI integration как action-driven модуль
+3. Шаг 58 — проверить UI replaceability (mock UI test)
 
 ### После этого
 4. Вернуться к infra: deploy `supabase/functions/horde-proxy`
@@ -411,6 +411,13 @@ Architecture grows from flow, not folders.
 - [x] Добавлены фильтры по `actionType`, `level`, строковый поиск по событиям/trace/error
 - [x] Добавлена очистка timeline через `clearDispatchLog()`
 - [x] В timeline отображаются `event`, `duration`, `traceId`, `actionId`, `details`, `error`
+
+### Backend Mirror Prep 2026-03-19
+- [x] Добавлен слой `core/mirror` (контракты + проекторы) без endpoint/transport кода
+- [x] Введены mirror-типы: `MirrorRecord`, `MirrorBatch`, `MirrorVersion`
+- [x] Добавлена проекция `dispatch` structured logs → mirror records
+- [x] Добавлена группировка записей по `traceId` для будущей persistence-пайплайна
+- [x] Добавлен ADR 003 (`adr/003-backend-mirror-core-concepts.md`)
 
 ---
 

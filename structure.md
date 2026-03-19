@@ -17,6 +17,10 @@
 - `core/actions/dispatch.ts` — dispatcher со structured logging (`actionId`, `traceId`, typed events) и API подписки/очистки логов.
 - `core/handlers/index.ts` — карта intent → handler для chat/assets/cloud/settings и подключение module handlers; критичные async-flow пишут доменные log events.
 - `core/handlers/types.ts` — типы для handler context (`setState/getState/traceId/actionType/log`).
+- `core/mirror/types.ts` — backend-mirror контракты (`MirrorRecord`, `MirrorBatch`, версия схемы).
+- `core/mirror/projector.ts` — проекция structured `dispatch` логов в mirror-записи и группировка по `traceId`.
+- `core/mirror/index.ts` — публичный API mirror-слоя.
+- `core/mirror/README.md` — границы mirror-слоя (без endpoint/transport реализации).
 - `core/state/index.ts` — `AppState` и selectors (`activeChat`, `contextUsage` и др.).
 
 ## Modules
@@ -56,6 +60,7 @@
 - `history.md` — история переписки и краткие summaries по этапам.
 - `adr/001-architecture-guardrails.md` — ADR по архитектурным ограничениям.
 - `adr/002-runtime-vs-product-boundary.md` — ADR с границей между infra/runtime и product behavior.
+- `adr/003-backend-mirror-core-concepts.md` — ADR о backend mirror Core concepts без endpoint-driven подхода.
 
 ## Прочее
 - `index.html` — HTML shell, meta-теги, PWA wiring.
@@ -75,4 +80,5 @@
 - Граница между `runtime` и `product` теперь зафиксирована в ADR 002 и `runtime/README.md`.
 - Structured logging из Core уже внедрён; следующий архитектурный блок — debug timeline view в UI.
 - В `src/Panels.tsx` добавлена Debug-вкладка: live timeline `dispatch` событий с фильтрами и очисткой.
-- Следующий архитектурный блок — шаг 55 (backend mirror Core concepts, без endpoint-driven дизайна).
+- Шаг 55 (backend mirror Core concepts) закрыт через `core/mirror` и ADR 003.
+- Следующий архитектурный блок — шаг 56 (persistence design, aligned with action model).
