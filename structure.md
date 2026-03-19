@@ -14,9 +14,9 @@
 - `src/index.css` — глобальные стили.
 
 ## Core
-- `core/actions/dispatch.ts` — единый dispatcher с action timeline, logging и обвязкой handlers.
-- `core/handlers/index.ts` — карта intent → handler для chat/assets/cloud/settings и подключение module handlers.
-- `core/handlers/types.ts` — типы для handler context.
+- `core/actions/dispatch.ts` — dispatcher со structured logging (`actionId`, `traceId`, typed events) и API подписки/очистки логов.
+- `core/handlers/index.ts` — карта intent → handler для chat/assets/cloud/settings и подключение module handlers; критичные async-flow пишут доменные log events.
+- `core/handlers/types.ts` — типы для handler context (`setState/getState/traceId/actionType/log`).
 - `core/state/index.ts` — `AppState` и selectors (`activeChat`, `contextUsage` и др.).
 
 ## Modules
@@ -73,4 +73,4 @@
 - Supabase теперь зависит от `.env`; при пустой конфигурации приложение должно показать ошибку, а не упасть на старте.
 - Для внешнего тестирования уже есть рабочий Vercel preview; для постоянного runtime остаётся TimeWeb/Docker путь.
 - Граница между `runtime` и `product` теперь зафиксирована в ADR 002 и `runtime/README.md`.
-- Следующий архитектурный блок: structured logging, затем debug timeline.
+- Structured logging из Core уже внедрён; следующий архитектурный блок — debug timeline view в UI.

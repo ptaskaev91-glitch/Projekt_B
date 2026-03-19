@@ -10,7 +10,11 @@ import {
 } from "./types";
 import type { ChatAsset, ChatSession, HordeSettings } from "./types";
 
-import { dispatch as dispatchAction, type ActionHandlers } from "../core/actions/dispatch";
+import {
+  dispatch as dispatchAction,
+  type ActionHandlers,
+  type DispatchRuntimeContext,
+} from "../core/actions/dispatch";
 import { handlers as coreHandlers } from "../core/handlers";
 import { selectors, type AppState } from "../core/state";
 import { modelsActionTypes } from "../modules/models";
@@ -195,17 +199,64 @@ export function App() {
     };
     const getState = (): AppState => stateRef.current ?? viewState;
 
-    const handlersWithCtx: ActionHandlers = new Proxy(coreHandlers, {
-      get(target, prop: string) {
-        return (pl: unknown) => {
-          const handler = target[prop];
-          if (handler) {
-            return (handler as (payload: unknown, ctx: { setState: (p: (draft: AppState) => void) => void; getState: () => AppState }) => void)(pl, { setState, getState });
-          }
-          console.warn("[dispatch] no handler for", prop);
-        };
-      }
-    }) as unknown as ActionHandlers;
+    const handlersWithCtx = Object.fromEntries(
+      Object.entries(coreHandlers).map(([registeredType, handler]) => [
+        registeredType,
+        (pl: unknown, runtime: DispatchRuntimeContext) => {
+          let stateUpdateCount = 0;
+          const tracedSetState = (producer: (draft: AppState) => void) => {
+            setState(producer);
+            stateUpdateCount += 1;
+            runtime.log(
+              "state.update",
+              { handler: registeredType, stateUpdateCount },
+              "debug",
+            );
+          };
+
+          runtime.log("handler.start", { handler: registeredType }, "debug");
+
+          return Promise.resolve(
+            handler(pl, {
+              setState: tracedSetState,
+              getState,
+              traceId: runtime.traceId,
+              actionType: registeredType,
+              log: (event, details, level = "info") => {
+                runtime.log(
+                  event,
+                  {
+                    handler: registeredType,
+                    ...(details ?? {}),
+                  },
+                  level,
+                );
+              },
+            }),
+          )
+            .then((result) => {
+              runtime.log(
+                "handler.end",
+                { handler: registeredType, stateUpdateCount },
+                "debug",
+              );
+              return result;
+            })
+            .catch((error) => {
+              runtime.log(
+                "handler.error",
+                {
+                  handler: registeredType,
+                  stateUpdateCount,
+                  message: error instanceof Error ? error.message : String(error),
+                },
+                "error",
+              );
+              throw error;
+            });
+        },
+      ]),
+    ) as ActionHandlers;
 
     return dispatchAction({ type, payload }, handlersWithCtx);
   }, [viewState]);

@@ -217,7 +217,7 @@ Goal: System becomes scalable product runtime.
 50. [x] Move docker/nginx/deploy scripts into runtime (Dockerfile, nginx.conf, deploy.sh).
 51. [x] Separate environment configs (root `.env.development.example`, `runtime/.env.production.example`, Docker build args for Supabase).
 52. [x] Define runtime vs product responsibility (`runtime/README.md`, ADR 002).
-53. [ ] Add structured logging from Core.
+53. [x] Add structured logging from Core (`core/actions/dispatch.ts` + handler context trace logging).
 54. [ ] Introduce event timeline debugging view.
 55. [ ] Prepare backend mirror of Core concepts (NOT endpoints).
 56. [ ] Design persistence aligned with actions.
@@ -379,9 +379,9 @@ Architecture grows from flow, not folders.
 ## Что делаем дальше
 
 ### Ближайший блок — Phase 5
-1. Шаг 53 — добавить structured logging в `core/actions/dispatch.ts` и handler context
-2. Шаг 54 — сделать debug/event timeline view в UI для action flow и async jobs
-3. Шаг 55 — подготовить backend mirror Core concepts (без endpoint-driven дизайна)
+1. Шаг 54 — сделать debug/event timeline view в UI для action flow и async jobs
+2. Шаг 55 — подготовить backend mirror Core concepts (без endpoint-driven дизайна)
+3. Шаг 56 — спроектировать persistence, согласованный с action model
 
 ### После этого
 4. Вернуться к infra: deploy `supabase/functions/horde-proxy`
@@ -396,6 +396,14 @@ Architecture grows from flow, not folders.
 - [x] Добавлен runtime guard: приложение не падает при пустом `.env`, а показывает понятную ошибку конфигурации
 - [x] Удалена лишняя зависимость `@sentry/react`
 - [x] Документация синхронизирована с реальной структурой репозитория
+
+### Core Structured Logging 2026-03-19
+- [x] `core/actions/dispatch.ts` переведён на structured log events (`action.start`, `action.end`, `action.missing_handler`, `handler.event`)
+- [x] Добавлены `actionId` и `traceId` для корреляции action flow
+- [x] Добавлены API для шага 54: `getDispatchLog`, `clearDispatchLog`, `subscribeDispatchLog`
+- [x] `HandlerContext` расширен полями `traceId`, `actionType`, `log(...)`
+- [x] Мост в `src/App.tsx` логирует `handler.start/end/error` и каждое `state.update`
+- [x] Критичные async-handler'ы (`chat/sendMessage`, `cloud/load`) добавляют доменные log events
 
 ---
 

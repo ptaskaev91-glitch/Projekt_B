@@ -104,10 +104,16 @@ export const handlers: HandlerMap = {
       chatId?: string;
       effectiveModelName?: string;
     };
-    if (!userText || !chatId) return;
+    if (!userText || !chatId) {
+      ctx.log("chat.send.invalid_payload", { hasUserText: Boolean(userText), hasChatId: Boolean(chatId) }, "warn");
+      return;
+    }
     const state = ctx.getState();
     const chat = state.chats.find((c) => c.id === chatId);
-    if (!chat) return;
+    if (!chat) {
+      ctx.log("chat.send.chat_not_found", { chatId }, "warn");
+      return;
+    }
 
     ctx.setState((draft) => {
       const userMsg = { id: uid(), role: "user" as const, content: userText, createdAt: Date.now(), status: "done" as const };
@@ -129,6 +135,7 @@ export const handlers: HandlerMap = {
       const preset = settings.presets.find((p) => p.id === settings.activePresetId) ?? settings.presets[0];
       const { prompt } = buildPromptWithContext(chat, userText, settings.systemPrompt, settings.maxContextTokens);
       const modelToUse = effectiveModelName || chat.model || "aphrodite";
+      ctx.log("chat.send.job_create", { chatId, model: modelToUse }, "info");
 
       const create = await createTextJobViaProxy({
         prompt,
@@ -143,6 +150,7 @@ export const handlers: HandlerMap = {
       }, { apiKey: settings.apiKey, clientAgent: settings.clientAgent });
 
       if (!create?.id) throw new Error("Не получен id задачи.");
+      ctx.log("chat.send.job_created", { chatId, jobId: create.id }, "debug");
 
       for (let i = 0; i < 90; i++) {
         const status = await getTextJobStatusViaProxy(create.id, { apiKey: settings.apiKey, clientAgent: settings.clientAgent });
@@ -163,6 +171,7 @@ export const handlers: HandlerMap = {
         });
         if (status.done && Array.isArray(status.generations) && status.generations[0]) {
           const gen = status.generations[0];
+          ctx.log("chat.send.job_done", { chatId, worker: gen.worker_name ?? null }, "info");
           ctx.setState((draft) => {
             draft.chats = draft.chats.map((c) =>
               c.id === chatId
@@ -178,12 +187,17 @@ export const handlers: HandlerMap = {
           });
           return;
         }
-        if (status.faulted) throw new Error("Задача завершилась с ошибкой на Horde.");
+        if (status.faulted) {
+          ctx.log("chat.send.job_faulted", { chatId, jobId: create.id }, "warn");
+          throw new Error("Задача завершилась с ошибкой на Horde.");
+        }
         await wait(2500);
       }
+      ctx.log("chat.send.job_timeout", { chatId, jobId: create.id }, "warn");
       throw new Error("Таймаут ожидания.");
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Ошибка";
+      ctx.log("chat.send.error", { chatId, message: msg }, "error");
       ctx.setState((draft) => {
         draft.chats = draft.chats.map((c) =>
           c.id === chatId
@@ -270,6 +284,7 @@ export const handlers: HandlerMap = {
   "cloud/load": async (payload, ctx) => {
     const { userId, chats, settings } = (payload ?? {}) as { userId?: string; chats: ChatSession[]; settings: HordeSettings };
     if (!userId) return;
+    ctx.log("cloud.load.start", { userId, localChats: chats.length }, "info");
     ctx.setState((draft) => { draft.cloudStatus = "checking"; draft.cloudMessage = "Загружаю..."; });
     try {
       const ws = await loadCloudWorkspace(userId);
@@ -280,6 +295,7 @@ export const handlers: HandlerMap = {
         const localNewest = Math.max(...chats.map((c) => c.updatedAt));
         const cloudNewest = Math.max(...normalizedCloud.map((c) => c.updatedAt));
         if (cloudNewest > localNewest + 60000) {
+          ctx.log("cloud.load.conflict", { userId, localChats: chats.length, cloudChats: normalizedCloud.length }, "warn");
           ctx.setState((draft) => {
             draft.cloudStatus = "conflict";
             draft.cloudMessage = `Конфликт: локально ${chats.length}, в облаке ${normalizedCloud.length}`;
@@ -288,6 +304,7 @@ export const handlers: HandlerMap = {
           return;
         }
       }
+      ctx.log("cloud.load.success", { userId, cloudChats: ws.chats.length, hasSettings: Boolean(ws.settings) }, "info");
       ctx.setState((draft) => {
         if (ws.settings) draft.settings = { ...draft.settings, ...ws.settings };
         if (hasCloud) {
@@ -302,6 +319,7 @@ export const handlers: HandlerMap = {
         draft.cloudMessage = ws.message;
       });
     } catch (e) {
+      ctx.log("cloud.load.error", { userId, message: e instanceof Error ? e.message : String(e) }, "error");
       ctx.setState((draft) => { draft.cloudStatus = "error"; draft.cloudMessage = e instanceof Error ? e.message : "Ошибка загрузки облака"; });
     }
   },

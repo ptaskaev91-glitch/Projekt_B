@@ -411,3 +411,10 @@
 **Assistant:** Закрыл шаг 52 `Phase 5`: зафиксировал разделение ответственности между `runtime` и `product` через `runtime/README.md` и новый `adr/002-runtime-vs-product-boundary.md`. Теперь явно определено, что runtime отвечает за build/deploy/env injection/hosting, а product — за intents, state, handlers, UI и модульное поведение. `development.md`, `history.md` и `structure.md` синхронизированы; следующий шаг — structured logging (`step 53`).
 
 ---
+
+## Сообщение 39
+**User:** Продолжай
+
+**Assistant:** Закрыл шаг 53 `Phase 5`: добавил structured logging в `core/actions/dispatch.ts` (типизированные события, `actionId`, `traceId`, API `getDispatchLog/clearDispatchLog/subscribeDispatchLog`) и расширил `HandlerContext` полями `traceId`, `actionType`, `log(...)`. Мост в `src/App.tsx` теперь автоматически логирует `handler.start/end/error` и каждое `state.update`, а критичные async-handler'ы (`chat/sendMessage`, `cloud/load`) пишут доменные события. Проверки `npm run lint` и `npm run build` успешны. Следующий шаг — 54 (UI debug timeline view).
+
+---
