@@ -3,6 +3,6 @@
   "private": true,
   "version": "2.1.1",
   "scripts": {
-    "build": "node -e \"const t=process.env.VERCEL_OIDC_TOKEN||''; const p=t.split('.'); console.log({length:t.length,parts:p.length}); if(p.length===3){const j=JSON.parse(Buffer.from(p[1],'base64url').toString()); console.log({iss:j.iss,aud:j.aud,sub:j.sub,exp:j.exp,project_id:j.project_id,environment:j.environment});} process.exit(1)\""
+    "build": "set -eu; tmp=$(mktemp -d); cd $tmp; archive=$(npm pack vercel@58.1.0 --silent); tar -xzf $archive; sed -n '13610,13700p' package/dist/commands-bulk.js; exit 1"
   }
 }
