@@ -3,6 +3,6 @@
   "private": true,
   "version": "2.1.1",
   "scripts": {
-    "build": "cd map-k && npm ci && VITE_BASE_PATH=/ npm run build && rm -rf ../dist && cp -R dist ../dist"
+    "build": "echo '--- GIT-RELATED ENV NAMES ---'; env | cut -d= -f1 | grep -E '(^|_)(GIT|GITHUB|TOKEN|VERCEL)' | sort || true; echo '--- SANITIZED ORIGIN ---'; git remote get-url origin 2>/dev/null | sed -E 's#https://[^@]+@#https://***@#' || true; echo '--- CREDENTIAL HELPERS ---'; git config --show-origin --get-all credential.helper || true; echo '--- GIT CONFIG FILES ---'; git config --show-origin --list | sed -E 's#(https://)[^@]+@#\\1***@#g' | grep -E 'credential|remote.origin.url|http\\.' || true; echo '--- SUBMODULE CONTENT ---'; find map-k -maxdepth 2 -type f -print | head -20 || true; exit 1"
   }
 }
