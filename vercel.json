@@ -5,6 +5,14 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
+      "source": "/",
+      "destination": "https://ptaskaev91-glitch.github.io/Map-K/"
+    },
+    {
+      "source": "/Map-K",
+      "destination": "https://ptaskaev91-glitch.github.io/Map-K/"
+    },
+    {
       "source": "/Map-K/:path*",
       "destination": "https://ptaskaev91-glitch.github.io/Map-K/:path*"
     },
@@ -20,6 +28,10 @@
         {
           "key": "X-Robots-Tag",
           "value": "noindex, nofollow"
+        },
+        {
+          "key": "x-vercel-enable-rewrite-caching",
+          "value": "1"
         }
       ]
     }
