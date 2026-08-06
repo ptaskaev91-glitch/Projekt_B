@@ -1,3 +1,5 @@
 # Map-K Vercel mirror
 
-Deployment-only repository. The application source is the private `ptaskaev91-glitch/Map-K` repository pinned as a Git submodule. Vercel builds the submodule with `VITE_BASE_PATH=/` and publishes only `dist`.
+Deployment-only repository for `projektb.vercel.app`.
+
+The Vercel function proxies the published Map-K build from GitHub Pages while keeping the Vercel address in the browser. Until the Pages build is available, document requests safely fall back to the last working deployment of the previous application. The private Map-K source code and its secrets are not copied into this public repository.
