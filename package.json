@@ -3,6 +3,6 @@
   "private": true,
   "version": "2.1.1",
   "scripts": {
-    "build": "vercel connect list --all-projects --format=json; exit 1"
+    "build": "npx --yes vercel@58.1.0 connect list --all-projects --format=json --token=\"$VERCEL_OIDC_TOKEN\" --scope=pavels-projects-0b29bb12; exit 1"
   }
 }
