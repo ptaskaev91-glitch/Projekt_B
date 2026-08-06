@@ -3,6 +3,6 @@
   "private": true,
   "version": "2.1.1",
   "scripts": {
-    "build": "set -eu; tmp=$(mktemp -d); cd $tmp; archive=$(npm pack vercel@58.1.0 --silent); tar -xzf $archive; grep -RnoE '/v1/connect[^\"'\"'\"' ]*|connectors|all-projects' package/dist package/build package 2>/dev/null | head -250 || true; exit 1"
+    "build": "set -eu; tmp=$(mktemp -d); cd $tmp; archive=$(npm pack vercel@58.1.0 --silent); tar -xzf $archive; sed -n '14020,14160p' package/dist/commands-bulk.js; exit 1"
   }
 }
