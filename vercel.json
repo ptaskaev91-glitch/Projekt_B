@@ -1,39 +1,19 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "buildCommand": "node build.mjs",
+  "installCommand": "echo 'Root install skipped; dependencies are installed inside map-k during build'",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "rewrites": [
-    {
-      "source": "/",
-      "destination": "https://ptaskaev91-glitch.github.io/Map-K/"
-    },
-    {
-      "source": "/Map-K",
-      "destination": "https://ptaskaev91-glitch.github.io/Map-K/"
-    },
-    {
-      "source": "/Map-K/:path*",
-      "destination": "https://ptaskaev91-glitch.github.io/Map-K/:path*"
-    },
-    {
-      "source": "/:path*",
-      "destination": "https://ptaskaev91-glitch.github.io/Map-K/:path*"
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow"
-        },
-        {
-          "key": "x-vercel-enable-rewrite-caching",
-          "value": "1"
-        }
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" }
       ]
     }
+  ],
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

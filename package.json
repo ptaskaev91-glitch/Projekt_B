@@ -1,9 +1,8 @@
 {
   "name": "map-k-vercel-mirror",
-  "version": "1.0.0",
   "private": true,
-  "type": "module",
+  "version": "2.1.1",
   "scripts": {
-    "build": "node build.mjs"
+    "build": "cd map-k && npm ci && VITE_BASE_PATH=/ npm run build && rm -rf ../dist && cp -R dist ../dist"
   }
 }

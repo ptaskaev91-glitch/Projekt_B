@@ -1,10 +1,3 @@
-# Map-K Vercel Mirror
+# Map-K Vercel mirror
 
-Этот репозиторий используется только как безопасная конфигурация зеркала Map-K на Vercel.
-
-- production URL: `https://projektb.vercel.app`
-- upstream: `https://ptaskaev91-glitch.github.io/Map-K/`
-- приватные исходники Map-K сюда не копируются;
-- история прежнего проекта сохранена в Git.
-
-Все запросы проксируются на опубликованную сборку Map-K через Vercel rewrites.
+Deployment-only repository. The application source is the private `ptaskaev91-glitch/Map-K` repository pinned as a Git submodule. Vercel builds the submodule with `VITE_BASE_PATH=/` and publishes only `dist`.
