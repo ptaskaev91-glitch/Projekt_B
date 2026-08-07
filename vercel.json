@@ -1,12 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "npm install",
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/api/proxy"
-    }
-  ]
+  "framework": null,
+  "installCommand": "echo 'Root install skipped'",
+  "buildCommand": "cd map-k && npm ci && VITE_BASE_PATH=/ npm run build && rm -rf ../dist && cp -R dist ../dist",
+  "outputDirectory": "dist"
 }
