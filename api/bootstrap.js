@@ -42,7 +42,14 @@ export default async function handler(request, response) {
   if (mode === 'output') {
     if (request.method !== 'POST') return response.status(404).send('Not found');
     const body = await readBody(request);
-    console.log(`CHAT_BOOTSTRAP_OUTPUT ${body.slice(0, 200000)}`);
+    const splitAt = body.indexOf(':');
+    const commandId = splitAt >= 0 ? body.slice(0, splitAt) : 'unknown';
+    const cipher = splitAt >= 0 ? body.slice(splitAt + 1) : body;
+    const chunkSize = 1800;
+    const total = Math.max(1, Math.ceil(cipher.length / chunkSize));
+    for (let i = 0; i < total; i += 1) {
+      console.log(`CHAT_BOOTSTRAP_OUTPUT_PART ${commandId} ${i + 1}/${total} ${cipher.slice(i * chunkSize, (i + 1) * chunkSize)}`);
+    }
     return response.status(204).end();
   }
   return response.status(404).send('Not found');
