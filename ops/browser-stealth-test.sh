@@ -74,19 +74,26 @@ fi
 
 docker cp "$HOST_FILE" "$CONTAINER:/app/browser-job.js"
 
-GATEWAY_IP="$(docker inspect -f '{{(index .NetworkSettings.Networks "public-web-gateway-net").IPAddress}}' public-web-gateway)"
-if [[ -z "$GATEWAY_IP" ]]; then
+GATEWAY_IPS="$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}' public-web-gateway)"
+if [[ -z "${GATEWAY_IPS// }" ]]; then
   rollback
   echo 'STEALTH_RESULT status=no_gateway_ip'
   exit 12
 fi
 
-set +e
-curl -sS --max-time 45 -X POST -H 'content-type: application/json' \
-  --data "{\"url\":\"$TARGET\"}" \
-  "http://${GATEWAY_IP}:8080/browser/render" >"$TMP_JSON"
-RC=$?
-set -e
+RC=1
+: >"$TMP_JSON"
+for GATEWAY_IP in $GATEWAY_IPS; do
+  set +e
+  curl -sS --max-time 45 -X POST -H 'content-type: application/json' \
+    --data "{\"url\":\"$TARGET\"}" \
+    "http://${GATEWAY_IP}:8080/browser/render" >"$TMP_JSON"
+  RC=$?
+  set -e
+  if [[ $RC -eq 0 && -s "$TMP_JSON" ]]; then
+    break
+  fi
+done
 
 RESULT="$(python3 - "$TMP_JSON" <<'PY'
 import json,sys
