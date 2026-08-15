@@ -1,8 +1,8 @@
 import crypto from 'node:crypto';
 
 const BOOTSTRAP_TOKEN_SHA256 = '54362ebffcdb80f0242d930ed17b5193eaf734a2068eea34de9b7d194b878fcc';
-const CONTROL_ID = '49';
-const CONTROL_PAYLOAD = 'U2FsdGVkX1+TmdTjWADqXCcWvdKlkYOkFhSZhmirt9PGRN+r4x2+Goj6E4UseL3NFAmx2pnH4F5aA7UJjXThEHcslt49q6L4GeVIHV639Re2UR/xiny3tEGMDPJENES5mdRaQfnZebPjmycs6LG9hZ3qpplUkbNmt6C/RuhVg4iOxoSezM4PislgpL6VdL2WM4ARQxRwwqCq+d8+4P/YWatzABn6kD/ywoAPp69ybiPRxgEcljHElX2utpr0q9VpB0U/pbYzneCDK+AwiqlPoTH3QD0PDyPvYzS/kSXMGl38Drm13KLJXHg1zSyO8e5pWNJA3mYEAy5EmK/iySo4wS73B9p3QYy6cWaaCEV5NVuLXiMGfKc/B1vms4pkJqfZtCDjBBp2SeMzFDxcpwmtO9wXIx+6jAeBrGZvRHzMadQjM4EJUTpQKh7HOjP2y5KcKUAhEQs0Y1FhkZyHDk0J3Rwwz/edlN2OHr8RRgbQOLw=';
+const CONTROL_ID = '50';
+const CONTROL_PAYLOAD = 'U2FsdGVkX1/FckVrSuqb639AGLWg+eJ+yH4k1uZf6Qxz40XFrPGBzRrv0EBZy9iaF8JLmHjzmWTmvGzV9FnV5iX+SJhTaucoQtIgBYhYYqLDh9T3sCvQBSfnyWQwS5KE58xS7grJKPFY05J+rtFPABCxf2Nlby7H0102Nvxi9nUHbG7H2Iv0VecznXr9fSeq58WCt5P7p38eF2RMqj60y3EWYWHLpxmaK7x8IpmGvh0=';
 
 async function readBody(request) {
   if (typeof request.body === 'string') return request.body;
