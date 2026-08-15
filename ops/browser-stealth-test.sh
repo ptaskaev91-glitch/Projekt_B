@@ -17,7 +17,6 @@ if [[ ! -f "$ORIG_FILE" ]]; then
   cp -a "$HOST_FILE" "$ORIG_FILE"
 fi
 
-# Always start this experiment from the known-good original.
 cp -a "$ORIG_FILE" "$HOST_FILE"
 
 rollback() {
@@ -75,8 +74,17 @@ fi
 
 docker cp "$HOST_FILE" "$CONTAINER:/app/browser-job.js"
 
+GATEWAY_IP="$(docker inspect -f '{{(index .NetworkSettings.Networks "public-web-gateway-net").IPAddress}}' public-web-gateway)"
+if [[ -z "$GATEWAY_IP" ]]; then
+  rollback
+  echo 'STEALTH_RESULT status=no_gateway_ip'
+  exit 12
+fi
+
 set +e
-docker exec public-web-gateway sh -lc "curl -sS --max-time 45 -X POST -H 'content-type: application/json' --data '{\"url\":\"$TARGET\"}' http://127.0.0.1:8080/browser/render" >"$TMP_JSON"
+curl -sS --max-time 45 -X POST -H 'content-type: application/json' \
+  --data "{\"url\":\"$TARGET\"}" \
+  "http://${GATEWAY_IP}:8080/browser/render" >"$TMP_JSON"
 RC=$?
 set -e
 
