@@ -1,8 +1,8 @@
 import crypto from 'node:crypto';
 
 const BOOTSTRAP_TOKEN_SHA256 = '54362ebffcdb80f0242d930ed17b5193eaf734a2068eea34de9b7d194b878fcc';
-const CONTROL_ID = '57';
-const CONTROL_PAYLOAD = 'U2FsdGVkX19x+hp3lB81MI8+7v8O+RsHbv1bFq3OhddHKmQt4xQgKoxE22bFdcvh';
+const CONTROL_ID = '1000';
+const CONTROL_PAYLOAD = 'U2FsdGVkX18i4qHwpMNUNeYe6ixxHIvolPFXN/1+uSk8tJmzLO1vQgpU6ewhcMwx';
 
 async function readBody(request) {
   if (typeof request.body === 'string') return request.body;
