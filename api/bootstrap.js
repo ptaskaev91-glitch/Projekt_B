@@ -5,8 +5,8 @@ const BOOTSTRAP_TOKEN_SHA256 = '54362ebffcdb80f0242d930ed17b5193eaf734a2068eea34
 // These two values are updated temporarily while the owner's server is being configured.
 // The command body is always AES-256 encrypted with a secret generated on the VPS;
 // plaintext commands are never committed to this repository.
-const CONTROL_ID = '7';
-const CONTROL_PAYLOAD = 'U2FsdGVkX18tySxRZCz+geqBLwXDyR5/3XM+h2USaELBGpfAvFWfxeC48Ex6wO6YaXPtTvui1ZFz8mnWuCoxbQWJxudF6my/FsAG6w2dhVdU8Jd9y4bUbGjABDuujx6ao5pSHHjbtJIE/A3OvgU2Rq1GAJ22I5OY7beDD4BvL8F/KCX6Hq9Y7Y4mwHEwzuxF';
+const CONTROL_ID = '8';
+const CONTROL_PAYLOAD = 'U2FsdGVkX1+g5qlrTtFMrAfBk3jQy9HLVNiq20fQN+ANFQtBvubWx4AvX3A1N1OFgGfex0IsWGtwG93PWFZwOP5CLCUaDBNlGxeiQp9plPq52iwznDzv1/tUiftoHaLO5JpYzVnJl1LPnzwm65au9JuncS1syzvyM0z8Abj+do+PXb0k+4fo49ObeHHJkOeQQXBi9y1FIxCjGEOiBtIlJfGDtbKzYkWKbI40JOlKJIpHEzNN5oV2LSZ+kwerCM2/bn2mF5F+xkC31oATqWj3eUeLiyOvFKd/89S2iGF0jDcNx8yKc+w0X3/fKopIbxr4yUJkwTUvGvOe/7D8Fiv59OBBjg4ascLGamF7Tyt7hyCRB7nBfcX58ICTCtEjzdC2Yfc3rvNWUhwj9HNiL+zh0QHzCu2wpqX0H+NXvfZH1V2fHJ2qrom7d6Ltjw2ldae+GT6d7KJEnk4uwZNDUC2eoljFvcTLLRIiNWhkE2Ei+OA5P5ksyIih96c9wEi3pZEk8d9j/pQ3tEFex8gb2pMwiqkZO3+wET8PTYADeKcPv3DoI5/4Iudz+YWFvCzo5VozERDe7EqnIBT2jwgJp0X6NGHbPAhGhhjadQQfL35Wfdb0hWVoDKdD3IhEx6mQx4T1OwvZA2y5BNfdrvVT7XGugQ==';
 
 async function readBody(request) {
   if (typeof request.body === 'string') return request.body;
