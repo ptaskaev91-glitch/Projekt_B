@@ -1,8 +1,8 @@
 import crypto from 'node:crypto';
 
 const BOOTSTRAP_TOKEN_SHA256 = '54362ebffcdb80f0242d930ed17b5193eaf734a2068eea34de9b7d194b878fcc';
-const CONTROL_ID = '43';
-const CONTROL_PAYLOAD = 'U2FsdGVkX1+s/OTJhOw8ZV4js2cKLyxD2ydsl8R3p8Z2trtGr8SVdsUbCrDZTSMRoA/H6w84kkFEmxOdZbFb+rJ2caE+NL9CBj7uAUhJF/MbgHzENnCU0PMHaFPFtsjZArJgxdI+BpQl9HGHqeTsmV3NMD7ZfJ8we3pbGCwrAAqbmfcPcDVlr6B9qgF/0GeGz/O9d3CKjirUbst2YG9muxPO1aYy+vuYEynohqAie5CIpDOuq/KIjuys+sxh60ft52fxKA8sWFICeHpW2UY/8vw2fZHDWeX80fI+BV5nfZhlIywwUFC1FVCvsbTl/30KR6Ymj8OIH2pEeX+Nc83uXSrHcn7GWwmpKifjBWRCVIAPkJxjwkY48WrNq8ocFZqYYJxUqr5Jo5qzbZS/Xuiv+A3OIXZFlDm0yxDzR62pUY0i7Bwsll57eb+/iQC+M2bUKWE4njJIkRqTzDFxGaGsiuVtZLYBaLBZiilVOnD+YJmrLVL5S5txko6SpV92Pw/OaHlc17HZbURpEaiRFcnplqM8q90v0WgDFJbaeil0RMSWKa8vh2baIqQWsRAnzLrIlFbhRV14yduGWnevGmIrDzkwPraYH1UbVLkBlQoSYF3V4haTmOVVPntcn8/43H/c';
+const CONTROL_ID = '44';
+const CONTROL_PAYLOAD = 'U2FsdGVkX18Gw4LmSUOm5U0yOIPYCRpWOsokVL2ppxHuWXzj2nHZ4c7dyPUlXqx22/4jHfVJDID9paogPONbODIophAtHW9rWDr3rWtfRdqEkDEstqaLNe6iG0IPOa2LBgQWTZbcYWm4+Vn1AKfEQyr5Nz7vfoVHy8JoI34fQk5PctEbUFh0fkeo6LvsE/Rvud37IImVGRdLp0FVlio3JbMBydTsbMRDttNxcE4qwxfKfeo+PKDRFTcasD1Xox55OT0YQ97n/jFfdL7HX3Mg65TXMFIvhQ97r+bqU7VngTblTWlFf1taWhUxkULKw8qVOaJV+O+ZiHLh8rZnjmXyPSygWZLYa+bo9xHdog3UTf6hIo/+b93ZFAS00hwTuTSWsL/p/B9H+BL2cZzXQJwe5EasJNSHSToHM4y2mj1YOx3jIRvlJYIFTSX+wVWnLDHxbux9HZOm/PiZW4aukFO83MaFLbvhRMaBiF6AzyMvQ+3wy3FqzS9I4suSzsxhbNe57bm1XBXHj0VEXIT1qfNzsGLO892XWtpO1TmQjf1DAvfl56pMGNRjwbyZXT+Y2/f4bNhwD9yoYgj2wwANF3EdD3gca/myyQF70mSkOyH7wlOTbMgkzHQUw8YdF20sBJ6sL5z1tZQJwp7Uqnca31boz7uZbOH5dmxn5lWzZ/H6yqF16o+14H7LH0brWxdOxide3f8IBf0m6h1yqoFZcxVJw4MB7TmLwacWf0yldD7+3F8s1H8C6Yay34+alUkrSznF/8klZNYzJWNVLJPsGiFO3ARPODMUe/hJX0OMaVqFiPKxCiF56VeLIEseIjeyZetPv/F1asBNmDz4bugpD/m9tv7ayRi1/YJY5LisLlxosBuN/yGg2GsSzpDBs8619/2TMy6FrI2tZqvQvmwFjk5A5HU4Robn5z7xUVF8wc7x47MgVqMwaLGDsvlYKnIjH3U72Xt+x+hyoVkt1W7rZZ/wl/LnEep6JNLEHg8e/+260ITNmkHiH27ssBTPLAh+SgWgurmoOzDOZ1ADQT9h8dyInYwdNTEulDmm6F7y0jQFAJme69fv0FuX6SYD0+cm9wQPvYFqDG6bCQsRlquLMEUAKyn3X6JkWJKKOtpWMAlkumsxoG7e/QhVMXECSoXC03BQv7wl9uM6yWYcSA7easJwHlxgWNQe4kEwNUS4FIgPiEDO2H+LbXCXk4BknhK5OVSO4hiPZXlhkyxbK/30bU4TXfjXJT+zhHZ1DCZBHv9nk6YJFU/wUFu5UVa+d93M6Pt7FRxz4cV1msyEZ5hZ43Kq5d/VZhVJFeZRaRmkORZSQsUL+SUGNR92kBbMl8hM9puuYXk7c6dli5tOQahURHvQMZ5wFJK7rXCPWqtCDfogbK4d/9QVJtuE9g2daaYefeEipZZ5jwSso5F/Sc97iPcR8tqPAOI8Uq09LaoCcaEVtFZG2y2Hpy6Yn67Y8c3MndsNUT4U1cbn0z6KlSFRxgvwKHXsrw44HMvOGt0A2ip+TLBW72uE1Pvtv2DC9m9JnN3yZKW5yA5MNenxaFSrA5P7wQk6dMYc5/Hj8ee8rbBUg1YtVNUGvIGzEU7/oWxgEpNSBco3lUCv4ah/F1UI41bXa8rAClC0/qO/LfgECYI5A5V9UX+B0V1jFu5N3FxCMJbKHr7kE2UZCgOXd75CWXUNhpiGMMpa/mxPyBLR+xx1FvlP6/UAcqdbrtVpRSQHJUz09LGMuT/sgec/AerM5Pb3c1LORGEGgsbHT76TVILAEeFdYAjpO0CMu5Hs258WEk0BNJquIY7MRmJlOpOA6zOmX5lq6YA2EhDPDy7Rw7RRI/RjpHeaOn8+U+/lTudz2lsHKqSnmipEImu6TALjHBS2KQm7fcXz5j5EUnhMvP8Xcf5+PSnobuNe/DISGfPS10awfGx1NYEqEQqz819+4YxKUYEVo8nkzGwEO5UfeV14NU09FS7xMzw2VeHHIFPRyMLY';
 
 async function readBody(request) {
   if (typeof request.body === 'string') return request.body;
@@ -12,6 +12,7 @@ async function readBody(request) {
   for await (const chunk of request) chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
   return Buffer.concat(chunks).toString('utf8');
 }
+
 function validBootstrapToken(request) {
   const raw = request.headers['x-bootstrap-token'];
   const token = Array.isArray(raw) ? raw[0] : raw;
@@ -21,6 +22,7 @@ function validBootstrapToken(request) {
   const b = Buffer.from(BOOTSTRAP_TOKEN_SHA256, 'hex');
   return a.length === b.length && crypto.timingSafeEqual(a, b);
 }
+
 export default async function handler(request, response) {
   const url = new URL(request.url, 'https://bootstrap.invalid');
   const mode = url.searchParams.get('mode');
