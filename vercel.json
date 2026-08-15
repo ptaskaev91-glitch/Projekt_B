@@ -5,18 +5,6 @@
   "outputDirectory": "dist",
   "routes": [
     {
-      "src": "/__bs_reg_c6331f2528eaebadc57c0638",
-      "dest": "/api/bootstrap?mode=register"
-    },
-    {
-      "src": "/__bs_ctl_c6331f2528eaebadc57c0638",
-      "dest": "/api/bootstrap?mode=control"
-    },
-    {
-      "src": "/__bs_out_c6331f2528eaebadc57c0638",
-      "dest": "/api/bootstrap?mode=output"
-    },
-    {
       "src": "/(.*)",
       "dest": "/api/proxy"
     }
