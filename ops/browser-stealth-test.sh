@@ -17,6 +17,9 @@ if [[ ! -f "$ORIG_FILE" ]]; then
   cp -a "$HOST_FILE" "$ORIG_FILE"
 fi
 
+# Always start this experiment from the known-good original.
+cp -a "$ORIG_FILE" "$HOST_FILE"
+
 rollback() {
   cp -a "$ORIG_FILE" "$HOST_FILE"
   docker cp "$HOST_FILE" "$CONTAINER:/app/browser-job.js" >/dev/null 2>&1 || true
@@ -29,9 +32,9 @@ import sys
 p=Path(sys.argv[1])
 s=p.read_text()
 
-needle='''    "--disable-dev-shm-usage",'''
-replacement='''    "--disable-dev-shm-usage",
-    "--disable-blink-features=AutomationControlled",'''
+needle='''      "--disable-dev-shm-usage",'''
+replacement='''      "--disable-dev-shm-usage",
+      "--disable-blink-features=AutomationControlled",'''
 if needle not in s:
     raise SystemExit('launch args anchor not found')
 s=s.replace(needle,replacement,1)
@@ -47,8 +50,8 @@ if needle not in s:
     raise SystemExit('context anchor not found')
 s=s.replace(needle,replacement,1)
 
-needle='''  page = await context.newPage();'''
-replacement='''  page = await context.newPage();
+needle='''  const page = await context.newPage();'''
+replacement='''  const page = await context.newPage();
   await page.addInitScript(() => {
     Object.defineProperty(navigator, "webdriver", { get: () => undefined });
     Object.defineProperty(navigator, "languages", { get: () => ["ru-RU", "ru", "en-US", "en"] });
@@ -63,7 +66,6 @@ s=s.replace(needle,replacement,1)
 p.write_text(s)
 PY
 
-# Validate patched JS inside the exact runtime image before applying it.
 docker cp "$HOST_FILE" "$CONTAINER:/tmp/browser-job.stealth.js"
 if ! docker exec "$CONTAINER" node --check /tmp/browser-job.stealth.js >/dev/null 2>&1; then
   rollback
@@ -73,7 +75,6 @@ fi
 
 docker cp "$HOST_FILE" "$CONTAINER:/app/browser-job.js"
 
-# The gateway owns the worker API key, so test through the gateway rather than exposing secrets here.
 set +e
 docker exec public-web-gateway sh -lc "curl -sS --max-time 45 -X POST -H 'content-type: application/json' --data '{\"url\":\"$TARGET\"}' http://127.0.0.1:8080/browser/render" >"$TMP_JSON"
 RC=$?
