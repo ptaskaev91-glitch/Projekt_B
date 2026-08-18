@@ -20,12 +20,10 @@ id -u "$RUNNER_USER" >/dev/null 2>&1 || useradd --system --create-home --home-di
 install -d -o "$RUNNER_USER" -g "$RUNNER_USER" -m 755 "$RUNNER_DIR"
 install -d -o "$RUNNER_USER" -g "$RUNNER_USER" -m 755 "$AUDIT_DIR"
 
-# This installer is intended for a fresh Map-K runner. Do not attempt a destructive
-# remove/re-register cycle automatically if an existing registration is found.
 if [[ -f "$RUNNER_DIR/.runner" ]]; then
   echo 'A runner is already configured in /opt/actions-runner-mapk.' >&2
   echo 'Leaving the existing registration untouched.' >&2
-  ./opt/actions-runner-mapk/svc.sh status 2>/dev/null || true
+  "$RUNNER_DIR/svc.sh" status 2>/dev/null || true
   exit 0
 fi
 
