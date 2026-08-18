@@ -21,6 +21,7 @@ ACTION="$(python3 -c 'import json,sys; print(json.load(sys.stdin)["action"])' <<
 LAST="$(cat "$LAST_FILE" 2>/dev/null || echo 0)"
 (( ID > LAST )) || exit 0
 echo "$ID" > "$LAST_FILE"
+OUT=''
 case "$ACTION" in
   status)
     OUT="$(hostname; uptime -p; df -h /; free -h; docker ps --format 'table {{.Names}}\t{{.Status}}' 2>/dev/null || true)" ;;
@@ -32,12 +33,33 @@ case "$ACTION" in
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/partial/* 2>/dev/null || true
     npm cache clean --force >/dev/null 2>&1 || true
     docker image prune -f >/dev/null 2>&1 || true
-    OUT="$(df -h /; journalctl --disk-usage 2>/dev/null || true; docker system df 2>/dev/null || true; for c in amnezia-awg2 amnezia-shadowsocks amnezia-socks5proxy amnezia-openvpn-cloak amnezia-xray; do docker inspect "$c" --format '{{.Name}} running={{.State.Running}} restarts={{.RestartCount}}' 2>/dev/null || true; done)" ;;
-  install_mapk_worker)
-    curl -fsSL https://raw.githubusercontent.com/ptaskaev91-glitch/Map-K/main/ops/moscow-worker/install.sh -o /tmp/install-mapk.sh
-    chmod 700 /tmp/install-mapk.sh
-    MAP_K_DIR=/opt/map-k-worker MAP_K_REPO_URL=https://github.com/ptaskaev91-glitch/Map-K.git bash /tmp/install-mapk.sh >/tmp/install-mapk.log 2>&1 || true
-    OUT="$(tail -100 /tmp/install-mapk.log 2>/dev/null || true; df -h /; systemctl status map-k-worker.timer --no-pager -l 2>&1 || true)" ;;
+    OUT="$(df -h /; journalctl --disk-usage 2>/dev/null || true; docker system df 2>/dev/null || true)" ;;
+  prepare_mapk_runner)
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update >/tmp/mapk-runner-apt.log 2>&1 || true
+    apt-get install -y --no-install-recommends curl ca-certificates jq libicu-dev >/tmp/mapk-runner-apt-install.log 2>&1 || true
+    id -u github-runner >/dev/null 2>&1 || useradd --system --create-home --home-dir /home/github-runner --shell /bin/bash github-runner
+    install -d -o github-runner -g github-runner -m 755 /opt/actions-runner-mapk
+    RELEASE="$(curl -fsSL https://api.github.com/repos/actions/runner/releases/latest 2>/dev/null || true)"
+    TAG="$(python3 -c 'import json,sys; print(json.load(sys.stdin).get("tag_name", ""))' <<<"$RELEASE" 2>/dev/null || true)"
+    VERSION="${TAG#v}"
+    if [[ -z "$VERSION" ]]; then
+      OUT='failed to resolve latest actions/runner release'
+    else
+      URL="https://github.com/actions/runner/releases/download/v${VERSION}/actions-runner-linux-x64-${VERSION}.tar.gz"
+      curl -fL "$URL" -o /tmp/actions-runner.tar.gz >/tmp/mapk-runner-download.log 2>&1 || true
+      if [[ -s /tmp/actions-runner.tar.gz ]]; then
+        rm -rf /opt/actions-runner-mapk/*
+        tar -xzf /tmp/actions-runner.tar.gz -C /opt/actions-runner-mapk
+        chown -R github-runner:github-runner /opt/actions-runner-mapk
+        OUT="$(echo RUNNER_VERSION=$VERSION; du -sh /opt/actions-runner-mapk; ls -l /opt/actions-runner-mapk/config.sh /opt/actions-runner-mapk/run.sh 2>/dev/null || true; df -h /)"
+      else
+        OUT="$(echo runner_download_failed; tail -50 /tmp/mapk-runner-download.log 2>/dev/null || true)"
+      fi
+    fi
+    ;;
+  runner_status)
+    OUT="$(echo '=== runner dir ==='; ls -la /opt/actions-runner-mapk 2>/dev/null | head -30 || true; echo '=== services ==='; systemctl list-units --type=service --all | grep -i actions.runner || true; echo '=== processes ==='; pgrep -af 'Runner.Listener|Runner.Worker' || true; echo '=== disk ==='; df -h /)" ;;
   update_agent)
     curl -fsSL https://raw.githubusercontent.com/ptaskaev91-glitch/Projekt_B/main/install-server-control-v2.sh -o /tmp/scv2.sh
     chmod 700 /tmp/scv2.sh
