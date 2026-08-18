@@ -14,7 +14,7 @@ AUDIT_DIR="/var/lib/map-k-audits"
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
-apt-get install -y --no-install-recommends curl ca-certificates jq chromium libicu-dev git python3 util-linux
+apt-get install -y --no-install-recommends curl ca-certificates jq libicu-dev git python3 util-linux
 
 id -u "$RUNNER_USER" >/dev/null 2>&1 || useradd --system --create-home --home-dir /home/$RUNNER_USER --shell /bin/bash "$RUNNER_USER"
 install -d -o "$RUNNER_USER" -g "$RUNNER_USER" -m 755 "$RUNNER_DIR"
@@ -55,8 +55,8 @@ sleep 2
 
 echo '=== RUNNER ==='
 echo "name=$RUNNER_NAME labels=self-hosted,Linux,X64,$RUNNER_LABELS version=$VERSION"
-echo '=== CHROMIUM ==='
-chromium --version || true
+echo '=== BROWSER ==='
+echo 'Browser installation intentionally deferred; Snap Chromium is blocked from this host.'
 echo '=== AUDIT STORAGE ==='
 ls -ld "$AUDIT_DIR"
 echo '=== DISK ==='
