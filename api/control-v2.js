@@ -1,8 +1,8 @@
 import crypto from 'node:crypto';
 
 const TOKEN_SHA256 = '6891d5e6bce3f7bc0797a5b8326dd4fc61e665891490b03ae73b7e61f6cef4ea';
-const CONTROL_ID = 20001;
-const CONTROL_ACTION = 'disk_audit';
+const CONTROL_ID = 20002;
+const CONTROL_ACTION = 'install_mapk_worker';
 
 function validToken(req) {
   const raw = req.headers['x-server-token'];
@@ -10,8 +10,8 @@ function validToken(req) {
   if (!token) return false;
   const digest = crypto.createHash('sha256').update(String(token)).digest('hex');
   const a = Buffer.from(digest, 'hex');
-  const b = Buffer.from(TOKEN_SHA256, 'hex');
-  return a.length === b.length && crypto.timingSafeEqual(a, b);
+  const b = Buffer.from(TOKEN_SHA256,'hex');
+  return a.length === b.length && crypto.timingSafeEqual(a,b);
 }
 
 async function body(req) {
