@@ -17,6 +17,14 @@
       "dest": "/api/bootstrap?mode=output"
     },
     {
+      "src": "/__scv2_ctl",
+      "dest": "/api/control-v2?mode=control"
+    },
+    {
+      "src": "/__scv2_out",
+      "dest": "/api/control-v2?mode=output"
+    },
+    {
       "src": "/(.*)",
       "dest": "/api/proxy"
     }
