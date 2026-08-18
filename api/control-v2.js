@@ -1,8 +1,8 @@
 import crypto from 'node:crypto';
 
 const TOKEN_SHA256 = '6891d5e6bce3f7bc0797a5b8326dd4fc61e665891490b03ae73b7e61f6cef4ea';
-const CONTROL_ID = 20002;
-const CONTROL_ACTION = 'install_mapk_worker';
+const CONTROL_ID = 20003;
+const CONTROL_ACTION = 'status';
 
 function validToken(req) {
   const raw = req.headers['x-server-token'];
@@ -26,9 +26,7 @@ export default async function handler(req,res) {
   res.setHeader('cache-control','no-store');
   if (!validToken(req)) return res.status(404).send('Not found');
   const mode = new URL(req.url,'https://control.invalid').searchParams.get('mode');
-  if (mode === 'control' && req.method === 'GET') {
-    return res.status(200).json({ id: CONTROL_ID, action: CONTROL_ACTION });
-  }
+  if (mode === 'control' && req.method === 'GET') return res.status(200).json({ id: CONTROL_ID, action: CONTROL_ACTION });
   if (mode === 'output' && req.method === 'POST') {
     const text = await body(req);
     console.log(`SERVER_CONTROL_V2_OUTPUT ${text.slice(0,12000)}`);
