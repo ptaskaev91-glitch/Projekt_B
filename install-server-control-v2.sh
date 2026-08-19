@@ -14,6 +14,13 @@ BASE='https://projektb.vercel.app'
 TOKEN_FILE='/root/.server-control-v2/token'
 LAST_FILE='/root/.server-control-v2/last-id'
 TOKEN="$(cat "$TOKEN_FILE")"
+
+is_moscow() {
+  [[ "$(hostname 2>/dev/null || true)" == 'msk-1-vm-6dy5' ]] && return 0
+  ip -4 addr show scope global 2>/dev/null | grep -qE 'inet 72\.56\.14\.168/' && return 0
+  return 1
+}
+
 RESP="$(curl -fsS --max-time 15 -H "x-server-token: $TOKEN" "$BASE/__scv2_ctl" 2>/dev/null || true)"
 [[ -n "$RESP" ]] || exit 0
 ID="$(python3 -c 'import json,sys; print(int(json.load(sys.stdin)["id"]))' <<<"$RESP")"
@@ -60,11 +67,113 @@ case "$ACTION" in
     ;;
   runner_status)
     OUT="$(echo '=== runner dir ==='; ls -la /opt/actions-runner-mapk 2>/dev/null | head -30 || true; echo '=== services ==='; systemctl list-units --type=service --all | grep -i actions.runner || true; echo '=== processes ==='; pgrep -af 'Runner.Listener|Runner.Worker' || true; echo '=== disk ==='; df -h /)" ;;
+  game_status_moscow)
+    if ! is_moscow; then
+      OUT="REFUSED non-Moscow host=$(hostname 2>/dev/null || true) ips=$(hostname -I 2>/dev/null || true)"
+    else
+      OUT="$(
+        echo '=== TARGET ==='; hostname; hostname -I 2>/dev/null || true; date -Is
+        echo '=== LOAD ==='; uptime; free -h
+        echo '=== RUNNER SERVICES ==='; systemctl list-units --type=service --all | grep -E 'facefall-survivor|server-control-ru|Map-K' || true
+        echo '=== WORKERS ==='; ps -eo pid,ppid,user,etime,%cpu,%mem,args --sort=-%cpu | grep -E 'Runner\.(Listener|Worker)|dev-heavy|playwright|chromium|npm run build:deploy|certbot' | grep -v grep | head -n 120 || true
+        echo '=== HEAVY LOCK ==='; fuser -v /var/lock/dev-platform/heavy.lock 2>/dev/null || true
+        echo '=== NGINX ==='; systemctl is-active nginx 2>/dev/null || true; nginx -t 2>&1 || true
+        echo '=== GAME HTTP ==='; curl -sS -D- --max-time 5 -H 'Host: super-makar.72-56-14-168.sslip.io' http://127.0.0.1/health 2>&1 || true
+      )"
+    fi
+    ;;
+  game_recovery_moscow)
+    if ! is_moscow; then
+      OUT="REFUSED non-Moscow host=$(hostname 2>/dev/null || true) ips=$(hostname -I 2>/dev/null || true)"
+    else
+      mapfile -t GAME_SERVICES < <(find /etc/systemd/system -maxdepth 1 -type f -name 'actions.runner.ptaskaev91-glitch-facefall-survivor*.service' -printf '%f\n' 2>/dev/null | sort)
+      mapfile -t CONTROL_SERVICES < <(find /etc/systemd/system -maxdepth 1 -type f -name 'actions.runner.ptaskaev91-glitch-server-control-ru*.service' -printf '%f\n' 2>/dev/null | sort)
+      if ((${#GAME_SERVICES[@]} == 0 || ${#CONTROL_SERVICES[@]} == 0)); then
+        OUT="REFUSED missing target service game=${GAME_SERVICES[*]:-none} control=${CONTROL_SERVICES[*]:-none}"
+      else
+        BEFORE="$(uptime; free -h; fuser -v /var/lock/dev-platform/heavy.lock 2>/dev/null || true)"
+        TARGET_USERS=()
+        for svc in "${GAME_SERVICES[@]}" "${CONTROL_SERVICES[@]}"; do
+          u="$(systemctl show -p User --value "$svc" 2>/dev/null || true)"
+          [[ -n "$u" ]] && TARGET_USERS+=("$u")
+          timeout 12s systemctl stop "$svc" >/dev/null 2>&1 || true
+          systemctl kill --kill-who=all --signal=SIGTERM "$svc" >/dev/null 2>&1 || true
+        done
+        sleep 4
+        for svc in "${GAME_SERVICES[@]}" "${CONTROL_SERVICES[@]}"; do
+          systemctl kill --kill-who=all --signal=SIGKILL "$svc" >/dev/null 2>&1 || true
+          systemctl reset-failed "$svc" >/dev/null 2>&1 || true
+        done
+        sleep 2
+
+        LOCK_PIDS="$(fuser /var/lock/dev-platform/heavy.lock 2>/dev/null || true)"
+        LOCK_NOTE='none'
+        for pid in $LOCK_PIDS; do
+          user="$(ps -o user= -p "$pid" 2>/dev/null | xargs || true)"
+          cmd="$(ps -o args= -p "$pid" 2>/dev/null || true)"
+          owned=0
+          for target_user in "${TARGET_USERS[@]}"; do
+            [[ -n "$target_user" && "$user" == "$target_user" ]] && owned=1
+          done
+          [[ "$cmd" == *'/opt/actions-runner-game/'* || "$cmd" == *'/opt/actions-runner-server-control-ru/'* ]] && owned=1
+          if (( owned )); then
+            kill -TERM "$pid" 2>/dev/null || true
+            sleep 1
+            kill -KILL "$pid" 2>/dev/null || true
+            LOCK_NOTE="killed-owned-holder:$pid"
+          else
+            LOCK_NOTE="preserved-unrelated-holder:$pid:$user"
+          fi
+        done
+
+        NGINX_NOTE='ok'
+        if nginx -t >/tmp/game-recovery-nginx.log 2>&1; then
+          systemctl restart nginx >/dev/null 2>&1 || NGINX_NOTE='restart-failed'
+        else
+          NGINX_NOTE="config-invalid:$(tail -20 /tmp/game-recovery-nginx.log | tr '\n' ' ')"
+        fi
+
+        for svc in "${CONTROL_SERVICES[@]}"; do
+          systemctl start "$svc" >/dev/null 2>&1 || true
+        done
+        install -d -m 2775 -o root -g dev-platform /var/lib/dev-platform/state/game 2>/dev/null || true
+        printf '%s\n' "paused-by-control-v2 $(date -Is)" >/var/lib/dev-platform/state/game/runner-paused-for-production
+
+        OUT="$(
+          echo 'MOSCOW_GAME_RECOVERY_OK'
+          echo "game_services=${GAME_SERVICES[*]}"
+          echo "control_services=${CONTROL_SERVICES[*]}"
+          echo "lock_note=$LOCK_NOTE nginx_note=$NGINX_NOTE"
+          echo '=== BEFORE ==='; printf '%s\n' "$BEFORE"
+          echo '=== AFTER ==='; uptime; free -h
+          echo '=== GAME RUNNER ==='; for svc in "${GAME_SERVICES[@]}"; do printf '%s=' "$svc"; systemctl is-active "$svc" 2>/dev/null || true; done
+          echo '=== CONTROL RUNNER ==='; for svc in "${CONTROL_SERVICES[@]}"; do printf '%s=' "$svc"; systemctl is-active "$svc" 2>/dev/null || true; done
+          echo '=== NGINX ==='; systemctl is-active nginx 2>/dev/null || true
+          echo '=== HEAVY LOCK ==='; fuser -v /var/lock/dev-platform/heavy.lock 2>/dev/null || true
+          echo '=== LOCAL GAME ==='; curl -sS -D- --max-time 5 -H 'Host: super-makar.72-56-14-168.sslip.io' http://127.0.0.1/health 2>&1 || true
+        )"
+      fi
+    fi
+    ;;
+  game_resume_moscow)
+    if ! is_moscow; then
+      OUT="REFUSED non-Moscow host=$(hostname 2>/dev/null || true) ips=$(hostname -I 2>/dev/null || true)"
+    else
+      mapfile -t GAME_SERVICES < <(find /etc/systemd/system -maxdepth 1 -type f -name 'actions.runner.ptaskaev91-glitch-facefall-survivor*.service' -printf '%f\n' 2>/dev/null | sort)
+      if ((${#GAME_SERVICES[@]} == 0)); then
+        OUT='REFUSED Game runner service not found'
+      else
+        for svc in "${GAME_SERVICES[@]}"; do systemctl start "$svc" >/dev/null 2>&1 || true; done
+        rm -f /var/lib/dev-platform/state/game/runner-paused-for-production 2>/dev/null || true
+        OUT="$(echo MOSCOW_GAME_RESUME_OK; uptime; free -h; for svc in "${GAME_SERVICES[@]}"; do printf '%s=' "$svc"; systemctl is-active "$svc" 2>/dev/null || true; done)"
+      fi
+    fi
+    ;;
   update_agent)
     curl -fsSL https://raw.githubusercontent.com/ptaskaev91-glitch/Projekt_B/main/install-server-control-v2.sh -o /tmp/scv2.sh
     chmod 700 /tmp/scv2.sh
     bash /tmp/scv2.sh "$TOKEN" >/tmp/scv2-update.log 2>&1 || true
-    OUT="$(cat /tmp/scv2-update.log 2>/dev/null || true)" ;;
+    OUT="$(echo "host=$(hostname 2>/dev/null || true) ips=$(hostname -I 2>/dev/null || true)"; cat /tmp/scv2-update.log 2>/dev/null || true)" ;;
   *) OUT="unsupported action: $ACTION" ;;
 esac
 python3 - "$ID" "$ACTION" "$OUT" <<'PY' >/tmp/scv2.json
@@ -97,4 +206,4 @@ UNIT
 systemctl daemon-reload
 systemctl enable --now server-control-v2.timer
 systemctl start server-control-v2.service || true
-echo "SERVER_CONTROL_V2_OK timer=$(systemctl is-active server-control-v2.timer 2>/dev/null || true)"
+echo "SERVER_CONTROL_V2_OK host=$(hostname 2>/dev/null || true) timer=$(systemctl is-active server-control-v2.timer 2>/dev/null || true)"
