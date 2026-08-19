@@ -25,10 +25,6 @@
       "dest": "/api/control-v2?mode=output"
     },
     {
-      "src": "/__recover_e6d279bb3638ec55db13b5cde1646ca4018f758420725bc6504c927c7508bab6",
-      "dest": "/api/moscow-recovery-once"
-    },
-    {
       "src": "/(.*)",
       "dest": "/api/proxy"
     }
