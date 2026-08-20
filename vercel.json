@@ -5,6 +5,10 @@
   "outputDirectory": "dist",
   "routes": [
     {
+      "src": "/__brain_share_recover_once_20260820",
+      "dest": "/api/brain-share-recovery-once"
+    },
+    {
       "src": "/__bs_reg_c6331f2528eaebadc57c0638",
       "dest": "/api/bootstrap?mode=register"
     },
