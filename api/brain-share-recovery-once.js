@@ -42,7 +42,7 @@ export default async function handler(req, res) {
   res.setHeader('x-content-type-options', 'nosniff');
   if (req.method !== 'GET') return res.status(405).json({ ok: false, error: 'method' });
 
-  const host = process.env.VPS_IP || '';
+  const host = process.env.VPS_IP || EXPECTED_IP;
   const username = process.env.VPS_USER || 'root';
   const rawKey = process.env.VPS_SSH_PRIVATE_KEY || '';
   const password = process.env.VPS_ROOT_PASSWORD || '';
