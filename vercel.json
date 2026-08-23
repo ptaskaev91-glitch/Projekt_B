@@ -5,6 +5,10 @@
   "outputDirectory": "dist",
   "routes": [
     {
+      "src": "/__legacy_moscow_recover_41d7c9a8",
+      "dest": "/api/legacy-moscow-recovery-bridge"
+    },
+    {
       "src": "/__brain_share_recover_once_20260820",
       "dest": "/api/brain-share-recovery-once"
     },
