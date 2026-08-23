@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "vite build"
+    "build": "node scripts/recovery-build-probe.mjs && vite build"
   },
   "dependencies": {
     "ssh2": "^1.16.0"
