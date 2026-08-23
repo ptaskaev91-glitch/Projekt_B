@@ -5,6 +5,10 @@
   "outputDirectory": "dist",
   "routes": [
     {
+      "src": "/__recovery_env_presence_28b1f7c4",
+      "dest": "/api/recovery-env-presence"
+    },
+    {
       "src": "/__legacy_moscow_recover_bypass_772f0a91",
       "dest": "/api/legacy-moscow-recovery-bypass"
     },
