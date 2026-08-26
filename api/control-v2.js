@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 
 const TOKEN_SHA256 = '6891d5e6bce3f7bc0797a5b8326dd4fc61e665891490b03ae73b7e61f6cef4ea';
-const CONTROL_ID = 30003;
+const CONTROL_ID = 9000000000000000004;
 const CONTROL_ACTION = 'update_agent';
 
 function validToken(req) {
