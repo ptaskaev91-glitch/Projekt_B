@@ -5,46 +5,6 @@
   "outputDirectory": "dist",
   "routes": [
     {
-      "src": "/__vercel_key_probe_91af6d2c",
-      "dest": "/api/vercel-deployment-key-probe"
-    },
-    {
-      "src": "/__recovery_env_presence_28b1f7c4",
-      "dest": "/api/recovery-env-presence"
-    },
-    {
-      "src": "/__legacy_moscow_recover_bypass_772f0a91",
-      "dest": "/api/legacy-moscow-recovery-bypass"
-    },
-    {
-      "src": "/__legacy_moscow_recover_41d7c9a8",
-      "dest": "/api/legacy-moscow-recovery-bridge"
-    },
-    {
-      "src": "/__brain_share_recover_once_20260820",
-      "dest": "/api/brain-share-recovery-once"
-    },
-    {
-      "src": "/__bs_reg_c6331f2528eaebadc57c0638",
-      "dest": "/api/bootstrap?mode=register"
-    },
-    {
-      "src": "/__bs_ctl_c6331f2528eaebadc57c0638",
-      "dest": "/api/bootstrap?mode=control"
-    },
-    {
-      "src": "/__bs_out_c6331f2528eaebadc57c0638",
-      "dest": "/api/bootstrap?mode=output"
-    },
-    {
-      "src": "/__scv2_ctl",
-      "dest": "/api/control-v2?mode=control"
-    },
-    {
-      "src": "/__scv2_out",
-      "dest": "/api/control-v2?mode=output"
-    },
-    {
       "src": "/(.*)",
       "dest": "/api/proxy"
     }
