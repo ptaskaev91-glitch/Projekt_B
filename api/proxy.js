@@ -7,11 +7,17 @@ function resolveUpstreamPath(pathname) {
   return `/Map-K${pathname.startsWith('/') ? '' : '/'}${pathname}`;
 }
 
+function copySafeSearch(sourceUrl, destinationUrl) {
+  for (const [key, value] of sourceUrl.searchParams) {
+    if (key.startsWith('_vercel')) continue;
+    destinationUrl.searchParams.append(key, value);
+  }
+}
+
 function fallbackHtml(requestUrl) {
   const url = new URL(requestUrl, 'https://mirror.invalid');
   const destinationUrl = new URL(resolveUpstreamPath(url.pathname), UPSTREAM_ORIGIN);
-  destinationUrl.search = url.search;
-  destinationUrl.hash = url.hash;
+  copySafeSearch(url, destinationUrl);
   const destination = destinationUrl.toString();
   const escaped = JSON.stringify(destination);
 
@@ -21,7 +27,7 @@ function fallbackHtml(requestUrl) {
 export default async function handler(request, response) {
   const requestUrl = new URL(request.url, 'https://mirror.invalid');
   const upstreamUrl = new URL(resolveUpstreamPath(requestUrl.pathname), UPSTREAM_ORIGIN);
-  upstreamUrl.search = requestUrl.search;
+  copySafeSearch(requestUrl, upstreamUrl);
 
   try {
     const upstream = await fetch(upstreamUrl, {
