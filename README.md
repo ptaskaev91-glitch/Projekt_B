@@ -1,25 +1,20 @@
 # Map-K Vercel mirror
 
-Deployment-only repository for `projektb.vercel.app`.
+Deployment-only shell for the Vercel project `projekt_b` / `projektb.vercel.app`.
 
-The Vercel function proxies the published Map-K build from GitHub Pages while keeping the Vercel address in the browser. Until the Pages build is available, document requests safely fall back to the last working deployment of the previous application. The private Map-K source code and its secrets are not copied into this public repository.
+This repository has one current responsibility: proxy the published Map-K build from GitHub Pages while preserving the Vercel address in the browser. It must not be used as a server recovery/control plane or as the live source repository for unrelated applications.
 
 ## Canonical deployment flow
 
-This repository is the deployment source of truth for the Vercel project `projekt_b`.
+- Map-K product source and data live outside this repository.
+- `Projekt_B/main` contains only the small Vercel deployment shell.
+- Vercel builds with Vite and routes requests to `/api/proxy`.
+- `/api/proxy` fetches the canonical GitHub Pages build from `ptaskaev91-glitch.github.io/Map-K/`.
+- If the server-side proxy cannot fetch a document, the browser fallback redirects to the same canonical GitHub Pages location. There is no fallback to the historical AI application.
+- Normal production changes go through Git and Vercel Git Integration. Rollback should use a known-good Vercel deployment or the preserved Git history.
 
-- `main` is the production branch. A push/merge to `main` must create the Production deployment through Vercel Git Integration.
-- Feature branches and pull requests are used for Preview deployments and validation before merge.
-- Routine deployments must not use manual `vercel --prod`, ad-hoc API deploys, or experimental OIDC/Connect flows.
-- Vercel OIDC is only relevant for runtime service-to-service authentication; it is not the deployment authentication mechanism.
-- Production configuration lives in version control (`vercel.json`, `package.json`, `api/proxy.js`). Secrets, if introduced later, belong only in Vercel Environment Variables and must never be committed.
-- Rollback should use a previously known-good Vercel deployment; normal forward changes should return to the Git flow above.
+## Scope boundary
 
-## Current architecture
+The historical AI Horde application that once occupied this repository remains preserved in Git history, including commit `d0ce83385a31bc5540631bb48e471f6654f5ad7d`, but it is no longer a responsibility of this deployment shell.
 
-1. GitHub repository `Projekt_B` contains the small deployment shell.
-2. Vercel builds it with Vite (`npm run build`) and serves the serverless route `/api/proxy`.
-3. `vercel.json` routes incoming paths to `/api/proxy`.
-4. The proxy serves the published Map-K build from GitHub Pages and uses the existing fallback deployment only if the upstream document is unavailable.
-
-The intended operating rule is simple: **change code in GitHub, validate Preview, merge to `main`, let Vercel deploy Production automatically.**
+Legacy bootstrap, Moscow recovery, Brain recovery and Vercel diagnostic endpoints have been retired from the active Map-K shell after their replacement paths were verified. The pre-split state is preserved on branch `archive/pre-split-2026-09-02`.
