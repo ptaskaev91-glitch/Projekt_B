@@ -1,5 +1,4 @@
 const UPSTREAM_ORIGIN = 'https://ptaskaev91-glitch.github.io';
-const FALLBACK_ORIGIN = 'https://projekt-fia1g7wi3-pavels-projects-0b29bb12.vercel.app';
 
 function resolveUpstreamPath(pathname) {
   if (!pathname || pathname === '/') return '/Map-K/';
@@ -10,9 +9,13 @@ function resolveUpstreamPath(pathname) {
 
 function fallbackHtml(requestUrl) {
   const url = new URL(requestUrl, 'https://mirror.invalid');
-  const destination = `${FALLBACK_ORIGIN}${url.pathname === '/' ? '/' : url.pathname}${url.search}${url.hash}`;
+  const destinationUrl = new URL(resolveUpstreamPath(url.pathname), UPSTREAM_ORIGIN);
+  destinationUrl.search = url.search;
+  destinationUrl.hash = url.hash;
+  const destination = destinationUrl.toString();
   const escaped = JSON.stringify(destination);
-  return `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta http-equiv="refresh" content="0;url=${destination}"><title>Map-K — зеркало</title><script>location.replace(${escaped})</script></head><body><p><a href="${destination}">Открыть рабочую версию</a></p></body></html>`;
+
+  return `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta http-equiv="refresh" content="0;url=${destination}"><title>Map-K — зеркало</title><script>location.replace(${escaped})</script></head><body><p><a href="${destination}">Открыть Map-K</a></p></body></html>`;
 }
 
 export default async function handler(request, response) {
